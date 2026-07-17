@@ -11,7 +11,8 @@ test("every contract token is defined in :root", () => {
 });
 
 test("the dark scheme overrides scheme-dependent tokens", () => {
-  assert.match(THEME_CSS, /\.dark\s*\{/);
+  // dark targets both conventions: `.dark` (class) and `[data-theme="dark"]` (attribute)
+  assert.match(THEME_CSS, /\.dark,\s*\[data-theme="dark"\]\s*\{/);
   const dark = THEME_CSS.slice(THEME_CSS.indexOf(".dark"));
   for (const name of ["background", "foreground", "card", "primary", "border"]) {
     assert.ok(dark.includes(`--${name}:`), `dark scheme missing --${name}`);
