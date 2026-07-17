@@ -50,6 +50,8 @@ export const CONTRACT = [
   "sidebar-primary", "sidebar-primary-foreground",
   "sidebar-accent", "sidebar-accent-foreground",
   "sidebar-border", "sidebar-ring",
+  // Typography (aligns with prefab's --font-sans / --font-mono)
+  "font-sans", "font-mono",
   // Shape + elevation scales (per-brand; Max Health is flat + sharp)
   "radius", "radius-sm", "radius-md", "radius-lg",
   "shadow-sm", "shadow", "shadow-md", "shadow-lg",
@@ -112,6 +114,10 @@ export const MAXHEALTH_CSS = `:root {
   --maxhealth: oklch(0.75 0.17 162);
   --maxhealth-foreground: oklch(0.09 0 0);
 
+  /* Typography */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
   /* Data viz */
   --chart-1: oklch(0.809 0.105 251.813);
   --chart-2: oklch(0.623 0.214 259.815);
@@ -130,7 +136,7 @@ export const MAXHEALTH_CSS = `:root {
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-.dark {
+.dark, [data-theme="dark"] {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);

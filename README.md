@@ -56,7 +56,9 @@ teal, rounded, soft-shadow look:
 ```
 
 Because every kit reads the same names, that one block rebrands SSR pages, React apps, and
-MCP-app UIs identically. Dark mode is the `.dark` class swapping the scheme-dependent values.
+MCP-app UIs identically. Dark mode swaps the scheme-dependent values under either
+`.dark` (class) or `[data-theme="dark"]` (attribute), matching prefab's renderer so one
+compiled brand works whichever convention a host uses.
 
 ## Development
 
