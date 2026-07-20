@@ -1,72 +1,74 @@
 # @max-network/css
 
-The shared **design-language contract** for every Max Network UI kit: one vocabulary of
-CSS custom properties that the SSR kit (`@max-network/hono-ui`), the React kit
+The shared **design-language contract** for every Max Network UI kit: one vocabulary of CSS
+custom properties that the SSR kit (`@max-network/hono-ui`), the React kit
 (`@max-health-inc/shared-ui`) and the MCP-app renderer (`@maxhealth.tech/prefab`) all read.
-Different runtimes, one variable vocabulary, so a brand is authored **once** and works
-everywhere.
+Different runtimes, one variable vocabulary, so a brand is authored **once** and works everywhere.
 
 ## Two axes
 
-- **The contract** — the *names* of the variables (`--primary`, `--card`, `--radius`,
-  `--success`, …). Stable across kits and stacks. See `CONTRACT` in [`src/theme.ts`](src/theme.ts).
-- **A brand** — the *values* for those names. This package ships the **Max Health** brand
-  (flat + sharp: `--radius: 0`, no shadows, neutral grayscale intents + the Max Health green).
-  Any app rebrands by overriding a handful of variables.
+- **The contract** — the *names* of the variables (`--primary`, `--card`, `--radius`, `--success`,
+  `--font-sans`, …). Stable across kits and stacks. See `CONTRACT` / `TokenName`.
+- **A brand** — the *values*. This package ships the **Max Health** brand (`maxhealth`): flat + sharp
+  (`--radius: 0`, no shadows), neutral intents + green accent. Rebrand = a new `Brand` with the same
+  names, different values.
 
-## Consume it
+## Authored once, generated many
 
-Two delivery formats from one source:
+The single source of truth is structured data in [`src/tokens.ts`](src/tokens.ts) (each colour as a
+`{ light, dark }` pair). Every delivery format is **generated** from it by
+[`src/compile.ts`](src/compile.ts), so they cannot drift:
 
-**SSR string-injection** (e.g. hono-ui folds it into the `<style>` it already emits):
+| Output | For | Import |
+| --- | --- | --- |
+| `THEME_CSS` (string) | SSR string-injection (hono-ui) | `import { THEME_CSS } from "@max-network/css"` |
+| `theme.css` (file) | bundler / CDN (shared-ui, plain HTML) | `import "@max-network/css/theme.css"` |
+| `tailwind.css` (file) / `TAILWIND_CSS` | Tailwind v4 `@theme inline` preset | `import "@max-network/css/tailwind.css"` |
+| `toPrefabTheme(brand)` | prefab wire `theme` JSON | `import { toPrefabTheme } from "@max-network/css"` |
 
-```ts
-import { THEME_CSS } from "@max-network/css";
-const html = `<style>${THEME_CSS}${componentStyles}</style>`;
-```
+## Modern CSS, on purpose
 
-**Bundler / CDN** (e.g. shared-ui, prefab):
+- **`light-dark()`** — each colour is one declaration (`--bg: light-dark(<light>, <dark>)`), not a
+  duplicated dark block. `:root { color-scheme: light dark }` honours `prefers-color-scheme`
+  automatically; `.dark` / `[data-theme="dark"]` (and `.light` / `[data-theme="light"]`) flip
+  `color-scheme` for a manual override. Both conventions, to match prefab's renderer.
+- **`@property`** — colour tokens are registered as `<color>` (type-safety + animatable).
+- **oklch** everywhere; derived surfaces via `color-mix()` in the consuming component CSS (no `-bg`
+  token sprawl).
 
-```ts
-import "@max-network/css/theme.css";
-```
+## Tailwind v4 (two-stage, runtime-switchable)
 
-Components never hardcode a colour — they read the contract:
+Raw values live in `:root`/dark (`theme.css`); `tailwind.css` is a **non-inline-value** `@theme inline`
+layer that maps them to Tailwind's namespaces **by reference** — so utilities like `bg-primary` exist
+*and* runtime dark switching still works (mapping with `var()`, never baking values at build time):
 
 ```css
-.badge-success { background: color-mix(in oklch, var(--success) 15%, transparent); color: var(--success); }
-.card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); }
+@import "tailwindcss";
+@import "@max-network/css/theme.css";
+@import "@max-network/css/tailwind.css";
 ```
 
 ## Rebrand (override, once)
 
-A brand is just an override block on the same contract. Example — the Gästehaus Schaub
-teal, rounded, soft-shadow look:
+```ts
+import { toCss, type Brand } from "@max-network/css";
+import { maxhealth } from "@max-network/css";
 
-```css
-:root {
-  --primary: oklch(0.58 0.06 195);      /* teal */
-  --primary-foreground: oklch(0.99 0 0);
-  --ring: oklch(0.58 0.06 195);
-  --radius: 0.625rem;                    /* rounded, not Max Health's sharp 0 */
-  --radius-lg: 0.875rem;
-  --shadow: 0 1px 2px rgb(23 32 31 / 0.05), 0 4px 14px rgb(23 32 31 / 0.05);
-  --shadow-md: 0 8px 24px rgb(23 32 31 / 0.12);
-}
+const gaestehaus: Brand = {
+  name: "gaestehaus",
+  colors: { ...maxhealth.colors, primary: { light: "oklch(0.58 0.06 195)", dark: "oklch(0.7 0.06 195)" } },
+  scalars: { ...maxhealth.scalars, radius: "0.625rem", "radius-lg": "0.875rem", shadow: "0 1px 2px rgb(23 32 31 / 0.05)" },
+};
+const css = toCss(gaestehaus); // teal, rounded, soft-shadow — same contract, works on every stack
 ```
-
-Because every kit reads the same names, that one block rebrands SSR pages, React apps, and
-MCP-app UIs identically. Dark mode swaps the scheme-dependent values under either
-`.dark` (class) or `[data-theme="dark"]` (attribute), matching prefab's renderer so one
-compiled brand works whichever convention a host uses.
 
 ## Development
 
 ```sh
 npm install
-npm run check   # tsc --noEmit && build && node --test
-npm run build   # tsc → dist/, then regenerate theme.css from THEME_CSS
+npm run check   # tsc --noEmit && build && node --test   (TypeScript 7)
+npm run build   # tsc → dist/, then regenerate theme.css + tailwind.css from the source
 ```
 
-`src/theme.ts` is the single source of truth; `theme.css` is generated from it by
-`scripts/build-css.mjs` and kept in sync by a test. Edit the TypeScript, never `theme.css`.
+`src/tokens.ts` is the single source of truth; the `.css` files are generated by
+`scripts/build-css.mjs` and kept in sync by a test. Edit the TypeScript, never the `.css`.

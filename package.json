@@ -17,13 +17,15 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./theme.css": "./theme.css"
+    "./theme.css": "./theme.css",
+    "./tailwind.css": "./tailwind.css"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
-    "theme.css"
+    "theme.css",
+    "tailwind.css"
   ],
   "sideEffects": [
     "*.css"
@@ -36,7 +38,7 @@
     "check": "tsc --noEmit && npm run build && node --test"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
-    "typescript": "^6.0.3"
+    "@types/node": "^24.0.0",
+    "typescript": "^7.0.2"
   }
 }
