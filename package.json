@@ -31,8 +31,8 @@
     "*.css"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && node scripts/build-css.mjs",
-    "prepare": "tsc -p tsconfig.build.json && node scripts/build-css.mjs",
+    "build": "node scripts/clean.mjs && tsc -p tsconfig.build.json && node scripts/build-css.mjs",
+    "prepare": "node scripts/clean.mjs && tsc -p tsconfig.build.json && node scripts/build-css.mjs",
     "typecheck": "tsc --noEmit",
     "test": "node --test",
     "check": "tsc --noEmit && npm run build && node --test"
