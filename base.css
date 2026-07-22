@@ -1,0 +1,10 @@
+/* GENERATED from src/base.ts by scripts/build-css.mjs — do not edit by hand. */
+:where(button):not(:disabled),
+:where([role="button"]):not([aria-disabled="true"]),
+:where(a[href]),
+:where(label[for]),
+:where(summary),
+:where(select):not(:disabled),
+:where([type="button"], [type="submit"], [type="reset"]):not(:disabled) {
+  cursor: pointer;
+}

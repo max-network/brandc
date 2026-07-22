@@ -1,6 +1,6 @@
 {
   "name": "@max-network/css",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Shared design-language contract (CSS custom properties) for Max Network UI kits — one variable vocabulary across SSR (hono-ui), React (shared-ui) and MCP-app (prefab) stacks, with the Max Health brand as the default preset.",
   "type": "module",
   "license": "UNLICENSED",
@@ -18,14 +18,16 @@
       "import": "./dist/index.js"
     },
     "./theme.css": "./theme.css",
-    "./tailwind.css": "./tailwind.css"
+    "./tailwind.css": "./tailwind.css",
+    "./base.css": "./base.css"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
     "theme.css",
-    "tailwind.css"
+    "tailwind.css",
+    "base.css"
   ],
   "sideEffects": [
     "*.css"

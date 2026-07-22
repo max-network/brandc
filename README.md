@@ -25,6 +25,21 @@ The single source of truth is structured data in [`src/tokens.ts`](src/tokens.ts
 | `theme.css` (file) | bundler / CDN (shared-ui, plain HTML) | `import "@max-network/css/theme.css"` |
 | `tailwind.css` (file) / `TAILWIND_CSS` | Tailwind v4 `@theme inline` preset | `import "@max-network/css/tailwind.css"` |
 | `toPrefabTheme(brand)` | prefab wire `theme` JSON | `import { toPrefabTheme } from "@max-network/css"` |
+| `base.css` (file) / `BASE_CSS` | **opt-in** element ergonomics (see below) | `import "@max-network/css/base.css"` |
+
+## Opt-in base ergonomics (`base.css`)
+
+The contract is pure token vocabulary. `base.css` is a **separate, optional** stylesheet for one
+cross-cutting framework quirk every Tailwind v4 consumer hits: Tailwind v4 dropped the default
+`cursor: pointer` on `<button>` (it follows the native `default` now). Import it if you want it:
+
+```css
+@import "@max-network/css/base.css";  /* restores pointer cursor on buttons, links, [role=button], … */
+```
+
+Plain low-specificity CSS (`:where(...)`) on element selectors — no tokens, easily overridden.
+SSR/string consumers that set cursors inline, and non-CSS consumers (React Native), just don't
+import it. It is never bundled into `theme.css` / `tailwind.css`.
 
 ## Modern CSS, on purpose
 
