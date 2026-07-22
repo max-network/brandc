@@ -87,8 +87,9 @@ export const maxhealth = {
     shadow: "none",
     "shadow-md": "none",
     "shadow-lg": "none",
-    // Typography
-    "font-sans": 'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    // Typography — Geist is the Max Health brand face; the stack after it is the fallback
+    // while @fontsource-variable/geist loads (each app imports the font file itself).
+    "font-sans": '"Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
     "font-mono": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
   },
 } satisfies Brand;

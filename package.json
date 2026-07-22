@@ -1,6 +1,6 @@
 {
   "name": "@max-network/css",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Shared design-language contract (CSS custom properties) for Max Network UI kits — one variable vocabulary across SSR (hono-ui), React (shared-ui) and MCP-app (prefab) stacks, with the Max Health brand as the default preset.",
   "type": "module",
   "license": "UNLICENSED",
