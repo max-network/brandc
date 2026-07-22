@@ -5,6 +5,7 @@ import {
   CONTRACT,
   THEME_CSS,
   TAILWIND_CSS,
+  BASE_CSS,
   maxhealth,
   toPrefabTheme,
 } from "../dist/index.js";
@@ -63,4 +64,16 @@ test("generated theme.css + tailwind.css are in sync with the source (run `npm r
   const tw = readFileSync(new URL("../tailwind.css", import.meta.url), "utf8");
   assert.ok(css.endsWith(THEME_CSS), "theme.css is stale");
   assert.ok(tw.endsWith(TAILWIND_CSS), "tailwind.css is stale");
+});
+
+test("base.css is opt-in element ergonomics, not part of the token contract", () => {
+  // Framework quirk fix (Tailwind v4 dropped button cursor), on element selectors — no tokens.
+  assert.ok(BASE_CSS.includes("cursor: pointer;"));
+  assert.ok(BASE_CSS.includes('[role="button"]'));
+  assert.ok(!BASE_CSS.includes("--"), "base.css must not declare custom properties");
+});
+
+test("generated base.css is in sync with the source (run `npm run build`)", () => {
+  const base = readFileSync(new URL("../base.css", import.meta.url), "utf8");
+  assert.ok(base.endsWith(BASE_CSS), "base.css is stale");
 });

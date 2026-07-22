@@ -4,10 +4,12 @@
 import { writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { THEME_CSS, TAILWIND_CSS } from "../dist/index.js";
+import { THEME_CSS, TAILWIND_CSS, BASE_CSS } from "../dist/index.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const banner = "/* GENERATED from src/tokens.ts by scripts/build-css.mjs — do not edit by hand. */\n";
+const baseBanner = "/* GENERATED from src/base.ts by scripts/build-css.mjs — do not edit by hand. */\n";
 writeFileSync(join(root, "theme.css"), banner + THEME_CSS, "utf8");
 writeFileSync(join(root, "tailwind.css"), banner + TAILWIND_CSS, "utf8");
-console.log("wrote theme.css + tailwind.css");
+writeFileSync(join(root, "base.css"), baseBanner + BASE_CSS, "utf8");
+console.log("wrote theme.css + tailwind.css + base.css");

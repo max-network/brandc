@@ -1,16 +1,16 @@
 {
-  "name": "@max-network/css",
-  "version": "0.1.1",
-  "description": "Shared design-language contract (CSS custom properties) for Max Network UI kits — one variable vocabulary across SSR (hono-ui), React (shared-ui) and MCP-app (prefab) stacks, with the Max Health brand as the default preset.",
+  "name": "brandc",
+  "version": "0.2.0",
+  "description": "Brand compiler: author a Brand as data and emit the shared design-token contract as CSS (toCss), Tailwind v4 (toTailwindCss) and prefab wire (toPrefabTheme). Ships the Max Health brand as the default preset.",
   "type": "module",
   "license": "UNLICENSED",
   "private": false,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/max-network/css.git"
+    "url": "git+https://github.com/max-network/brandc.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "exports": {
     ".": {
@@ -18,14 +18,18 @@
       "import": "./dist/index.js"
     },
     "./theme.css": "./theme.css",
-    "./tailwind.css": "./tailwind.css"
+    "./tailwind.css": "./tailwind.css",
+    "./base.css": "./base.css"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
     "theme.css",
-    "tailwind.css"
+    "tailwind.css",
+    "base.css",
+    "README.md",
+    "CHANGELOG.md"
   ],
   "sideEffects": [
     "*.css"

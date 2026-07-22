@@ -9,6 +9,7 @@
 export type { Brand, ColorToken, TokenName } from "./tokens.js";
 export { maxhealth, CONTRACT } from "./tokens.js";
 export { toCss, toTailwindCss, toPrefabTheme } from "./compile.js";
+export { BASE_CSS } from "./base.js";
 
 import { maxhealth } from "./tokens.js";
 import { toCss, toTailwindCss } from "./compile.js";
