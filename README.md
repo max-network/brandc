@@ -1,4 +1,4 @@
-# @max-network/css
+# brandc
 
 The shared **design-language contract** for every Max Network UI kit: one vocabulary of CSS
 custom properties that the SSR kit (`@max-network/hono-ui`), the React kit
@@ -21,11 +21,11 @@ The single source of truth is structured data in [`src/tokens.ts`](src/tokens.ts
 
 | Output | For | Import |
 | --- | --- | --- |
-| `THEME_CSS` (string) | SSR string-injection (hono-ui) | `import { THEME_CSS } from "@max-network/css"` |
-| `theme.css` (file) | bundler / CDN (shared-ui, plain HTML) | `import "@max-network/css/theme.css"` |
-| `tailwind.css` (file) / `TAILWIND_CSS` | Tailwind v4 `@theme inline` preset | `import "@max-network/css/tailwind.css"` |
-| `toPrefabTheme(brand)` | prefab wire `theme` JSON | `import { toPrefabTheme } from "@max-network/css"` |
-| `base.css` (file) / `BASE_CSS` | **opt-in** element ergonomics (see below) | `import "@max-network/css/base.css"` |
+| `THEME_CSS` (string) | SSR string-injection (hono-ui) | `import { THEME_CSS } from "brandc"` |
+| `theme.css` (file) | bundler / CDN (shared-ui, plain HTML) | `import "brandc/theme.css"` |
+| `tailwind.css` (file) / `TAILWIND_CSS` | Tailwind v4 `@theme inline` preset | `import "brandc/tailwind.css"` |
+| `toPrefabTheme(brand)` | prefab wire `theme` JSON | `import { toPrefabTheme } from "brandc"` |
+| `base.css` (file) / `BASE_CSS` | **opt-in** element ergonomics (see below) | `import "brandc/base.css"` |
 
 ## Opt-in base ergonomics (`base.css`)
 
@@ -34,7 +34,7 @@ cross-cutting framework quirk every Tailwind v4 consumer hits: Tailwind v4 dropp
 `cursor: pointer` on `<button>` (it follows the native `default` now). Import it if you want it:
 
 ```css
-@import "@max-network/css/base.css";  /* restores pointer cursor on buttons, links, [role=button], … */
+@import "brandc/base.css";  /* restores pointer cursor on buttons, links, [role=button], … */
 ```
 
 Plain low-specificity CSS (`:where(...)`) on element selectors — no tokens, easily overridden.
@@ -59,15 +59,15 @@ layer that maps them to Tailwind's namespaces **by reference** — so utilities 
 
 ```css
 @import "tailwindcss";
-@import "@max-network/css/theme.css";
-@import "@max-network/css/tailwind.css";
+@import "brandc/theme.css";
+@import "brandc/tailwind.css";
 ```
 
 ## Rebrand (override, once)
 
 ```ts
-import { toCss, type Brand } from "@max-network/css";
-import { maxhealth } from "@max-network/css";
+import { toCss, type Brand } from "brandc";
+import { maxhealth } from "brandc";
 
 const gaestehaus: Brand = {
   name: "gaestehaus",

@@ -1,0 +1,86 @@
+name: Release & Publish
+
+# Publishes `brandc` to public npm on every merge to main: patch-bump from the npm
+# latest (honouring an intentional manual bump in package.json), stamp the changelog,
+# tag, and publish with provenance. Manual dispatch also supported.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  id-token: write # OIDC for npm provenance / trusted publishing
+
+jobs:
+  release:
+    name: Test → Version → Publish (npm)
+    runs-on: ubuntu-latest
+    # Skip the bot's own "chore: release" commit so the push it makes doesn't loop.
+    if: ${{ github.event_name == 'workflow_dispatch' || !startsWith(github.event.head_commit.message, 'chore: release v') }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - run: npm install
+
+      # ── Version ─────────────────────────────────────
+      - name: Determine next version
+        id: version
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          NPM_LATEST=$(npm view brandc version 2>/dev/null || echo "0.0.0")
+          HIGHEST=$(printf '%s\n%s\n' "$NPM_LATEST" "$PKG_VERSION" | sort -V | tail -1)
+          # Honour a manual bump (package.json strictly ahead of npm); else patch-bump.
+          if [ "$PKG_VERSION" != "$NPM_LATEST" ] && [ "$HIGHEST" = "$PKG_VERSION" ]; then
+            NEXT="$PKG_VERSION"
+          else
+            IFS='.' read -r MA MI PA <<< "$NPM_LATEST"
+            NEXT="${MA}.${MI}.$((PA + 1))"
+          fi
+          echo "next=$NEXT" >> "$GITHUB_OUTPUT"
+          echo "### brandc $NPM_LATEST → $NEXT" >> "$GITHUB_STEP_SUMMARY"
+
+      # ── Changelog gate ──────────────────────────────
+      - name: Require & stamp changelog entry
+        run: node scripts/changelog-release.mjs "${{ steps.version.outputs.next }}"
+
+      - name: Set package.json version
+        run: npm version "${{ steps.version.outputs.next }}" --no-git-tag-version --allow-same-version
+
+      # ── Quality gates + build ───────────────────────
+      - name: Check (typecheck + build + test)
+        run: npm run check
+
+      # ── Commit, tag, push ───────────────────────────
+      - name: Commit & tag
+        run: |
+          NEXT="${{ steps.version.outputs.next }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json CHANGELOG.md theme.css tailwind.css base.css
+          git commit -m "chore: release v${NEXT}" || echo "nothing to commit"
+          git tag "v${NEXT}"
+          git push origin main --tags
+
+      # ── Publish ─────────────────────────────────────
+      - name: Publish to npm (provenance / OIDC trusted publishing)
+        run: npx npm@latest publish --provenance --access public
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.next }}
+          name: v${{ steps.version.outputs.next }}
+          generate_release_notes: true
