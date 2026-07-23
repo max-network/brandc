@@ -1,15 +1,16 @@
 # brandc
 
-The shared **design-language contract** for every Max Network UI kit: one vocabulary of CSS
-custom properties that the SSR kit (`@max-network/hono-ui`), the React kit
-(`@max-health-inc/shared-ui`) and the MCP-app renderer (`@maxhealth.tech/prefab`) all read.
-Different runtimes, one variable vocabulary, so a brand is authored **once** and works everywhere.
+**Author a brand once, compile it everywhere.** `brandc` is a tiny brand compiler: describe a
+`Brand` as structured data (design tokens) and generate a CSS custom-property contract, a Tailwind
+v4 preset, and a prefab-wire theme from it. One variable vocabulary across any stack — SSR string
+injection, bundler/CDN, plain HTML, React — so a brand is authored **once** and works everywhere.
+Ships an example brand you can use as-is or override.
 
 ## Two axes
 
 - **The contract** — the *names* of the variables (`--primary`, `--card`, `--radius`, `--success`,
   `--font-sans`, …). Stable across kits and stacks. See `CONTRACT` / `TokenName`.
-- **A brand** — the *values*. This package ships the **Max Health** brand (`maxhealth`): flat + sharp
+- **A brand** — the *values*. This package ships one example brand (`maxhealth`): flat + sharp
   (`--radius: 0`, no shadows), neutral intents + green accent. Rebrand = a new `Brand` with the same
   names, different values.
 
@@ -21,8 +22,8 @@ The single source of truth is structured data in [`src/tokens.ts`](src/tokens.ts
 
 | Output | For | Import |
 | --- | --- | --- |
-| `THEME_CSS` (string) | SSR string-injection (hono-ui) | `import { THEME_CSS } from "brandc"` |
-| `theme.css` (file) | bundler / CDN (shared-ui, plain HTML) | `import "brandc/theme.css"` |
+| `THEME_CSS` (string) | SSR string-injection | `import { THEME_CSS } from "brandc"` |
+| `theme.css` (file) | bundler / CDN / plain HTML | `import "brandc/theme.css"` |
 | `tailwind.css` (file) / `TAILWIND_CSS` | Tailwind v4 `@theme inline` preset | `import "brandc/tailwind.css"` |
 | `toPrefabTheme(brand)` | prefab wire `theme` JSON | `import { toPrefabTheme } from "brandc"` |
 | `base.css` (file) / `BASE_CSS` | **opt-in** element ergonomics (see below) | `import "brandc/base.css"` |
@@ -46,7 +47,7 @@ import it. It is never bundled into `theme.css` / `tailwind.css`.
 - **`light-dark()`** — each colour is one declaration (`--bg: light-dark(<light>, <dark>)`), not a
   duplicated dark block. `:root { color-scheme: light dark }` honours `prefers-color-scheme`
   automatically; `.dark` / `[data-theme="dark"]` (and `.light` / `[data-theme="light"]`) flip
-  `color-scheme` for a manual override. Both conventions, to match prefab's renderer.
+  `color-scheme` for a manual override. Both class and `data-theme` conventions are supported.
 - **`@property`** — colour tokens are registered as `<color>` (type-safety + animatable).
 - **oklch** everywhere; derived surfaces via `color-mix()` in the consuming component CSS (no `-bg`
   token sprawl).
@@ -69,12 +70,12 @@ layer that maps them to Tailwind's namespaces **by reference** — so utilities 
 import { toCss, type Brand } from "brandc";
 import { maxhealth } from "brandc";
 
-const gaestehaus: Brand = {
-  name: "gaestehaus",
+const ocean: Brand = {
+  name: "ocean",
   colors: { ...maxhealth.colors, primary: { light: "oklch(0.58 0.06 195)", dark: "oklch(0.7 0.06 195)" } },
   scalars: { ...maxhealth.scalars, radius: "0.625rem", "radius-lg": "0.875rem", shadow: "0 1px 2px rgb(23 32 31 / 0.05)" },
 };
-const css = toCss(gaestehaus); // teal, rounded, soft-shadow — same contract, works on every stack
+const css = toCss(ocean); // teal, rounded, soft-shadow — same contract, works on every stack
 ```
 
 ## Development
