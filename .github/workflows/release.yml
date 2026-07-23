@@ -23,7 +23,7 @@ jobs:
     # Skip the bot's own "chore: release" commit so the push it makes doesn't loop.
     # Quoted: the inner 'chore: release v' contains a colon-space, which breaks an
     # unquoted YAML scalar (startup failure "mapping values are not allowed here").
-    if: "${{ github.event_name == 'workflow_dispatch' || !startsWith(github.event.head_commit.message, 'chore: release v') }}"
+    if: ${{ github.actor != 'github-actions[bot]' }}
     steps:
       - uses: actions/checkout@v4
         with:
