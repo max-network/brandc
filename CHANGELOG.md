@@ -5,6 +5,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+## [0.2.2] — 2026-07-23
+
 ### Added
 
 - **Dual license.** Source code (compiler + token contract + scripts) is **MIT**; the bundled
