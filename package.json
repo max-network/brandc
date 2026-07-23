@@ -1,9 +1,9 @@
 {
   "name": "brandc",
-  "version": "0.2.0",
-  "description": "Brand compiler: author a Brand as data and emit the shared design-token contract as CSS (toCss), Tailwind v4 (toTailwindCss) and prefab wire (toPrefabTheme). Ships the Max Health brand as the default preset.",
+  "version": "0.2.1",
+  "description": "Brand compiler: author a Brand as data and emit the shared design-token contract as CSS (toCss), Tailwind v4 (toTailwindCss) and prefab wire (toPrefabTheme). Ships an example brand you can use as-is or override.",
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "private": false,
   "repository": {
     "type": "git",
@@ -29,7 +29,9 @@
     "tailwind.css",
     "base.css",
     "README.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "LICENSE",
+    "NOTICE"
   ],
   "sideEffects": [
     "*.css"
