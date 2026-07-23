@@ -1,0 +1,47 @@
+brandc is dual-licensed: the source code under MIT, and the bundled `maxhealth`
+example brand under Creative Commons Attribution 4.0 International (CC BY 4.0).
+
+================================================================================
+Source code — MIT License
+================================================================================
+
+The compiler, the token *contract* (variable names), the build scripts and all
+TypeScript/JS in this package.
+
+MIT License
+
+Copyright (c) 2026 Max Health Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+================================================================================
+Bundled example brand "maxhealth" — CC BY 4.0
+================================================================================
+
+The `maxhealth` brand *values* (the token values named "maxhealth" in
+`src/tokens.ts`, and the `theme.css` / `tailwind.css` / prefab theme generated
+from that brand) are licensed under the Creative Commons Attribution 4.0
+International License (CC BY 4.0): https://creativecommons.org/licenses/by/4.0/
+
+  Copyright (c) 2026 Max Health Inc.
+
+If you ship or publish the `maxhealth` brand, you must give appropriate credit
+to **Max Health Inc.** and link to **https://maxhealth.tech**. Authoring your
+own `Brand` (your own values) does not trigger this — the MIT-licensed compiler
+and contract are all you need.

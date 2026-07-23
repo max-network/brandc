@@ -1,0 +1,10 @@
+brandc
+Copyright (c) 2026 Max Health Inc.
+
+This product includes software (the brandc compiler and token contract) licensed
+under the MIT License, and a bundled example brand licensed under CC BY 4.0. See
+LICENSE for full terms.
+
+Attribution (required only if you ship the bundled `maxhealth` brand):
+  "maxhealth" brand by Max Health Inc. — https://maxhealth.tech
+  Licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).
