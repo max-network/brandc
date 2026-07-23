@@ -1,6 +1,6 @@
 {
   "name": "brandc",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Brand compiler: author a Brand as data and emit the shared design-token contract as CSS (toCss), Tailwind v4 (toTailwindCss) and prefab wire (toPrefabTheme). Ships an example brand you can use as-is or override.",
   "type": "module",
   "license": "MIT",
