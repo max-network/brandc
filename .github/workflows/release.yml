@@ -1,34 +1,22 @@
-name: Release & Publish
+name: Release and Publish
 
-# Publishes `brandc` to public npm on every merge to main: patch-bump from the npm
-# latest (honouring an intentional manual bump in package.json), stamp the changelog,
-# tag, and publish with provenance. Manual dispatch also supported.
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
-concurrency:
-  group: release
-  cancel-in-progress: false
-
 permissions:
   contents: write
-  id-token: write # OIDC for npm provenance / trusted publishing
+  id-token: write
 
 jobs:
   release:
-    name: Test → Version → Publish (npm)
     runs-on: ubuntu-latest
-    # Skip the bot's own "chore: release" commit so the push it makes doesn't loop.
-    # Quoted: the inner 'chore: release v' contains a colon-space, which breaks an
-    # unquoted YAML scalar (startup failure "mapping values are not allowed here").
     if: ${{ github.actor != 'github-actions[bot]' }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-node@v4
         with:
@@ -37,52 +25,37 @@ jobs:
 
       - run: npm install
 
-      # ── Version ─────────────────────────────────────
       - name: Determine next version
         id: version
         run: |
-          PKG_VERSION=$(node -p "require('./package.json').version")
-          NPM_LATEST=$(npm view brandc version 2>/dev/null || echo "0.0.0")
-          HIGHEST=$(printf '%s\n%s\n' "$NPM_LATEST" "$PKG_VERSION" | sort -V | tail -1)
-          # Honour a manual bump (package.json strictly ahead of npm); else patch-bump.
-          if [ "$PKG_VERSION" != "$NPM_LATEST" ] && [ "$HIGHEST" = "$PKG_VERSION" ]; then
-            NEXT="$PKG_VERSION"
-          else
-            IFS='.' read -r MA MI PA <<< "$NPM_LATEST"
-            NEXT="${MA}.${MI}.$((PA + 1))"
-          fi
+          NEXT=$(node -e "const cp=require('child_process');const pkg=require('./package.json').version;let npmv='0.0.0';try{npmv=cp.execSync('npm view brandc version',{stdio:['ignore','pipe','ignore']}).toString().trim()||'0.0.0'}catch(e){}const gt=(x,y)=>{const A=x.split('.').map(Number),B=y.split('.').map(Number);for(let i=0;i<3;i++){if(A[i]>B[i])return true;if(A[i]<B[i])return false}return false};const [a,b,c]=npmv.split('.').map(Number);console.log(gt(pkg,npmv)?pkg:[a,b,c+1].join('.'))")
           echo "next=$NEXT" >> "$GITHUB_OUTPUT"
-          echo "### brandc $NPM_LATEST → $NEXT" >> "$GITHUB_STEP_SUMMARY"
+          echo "brandc release version: $NEXT" >> "$GITHUB_STEP_SUMMARY"
 
-      # ── Changelog gate ──────────────────────────────
-      - name: Require & stamp changelog entry
+      - name: Stamp changelog
         run: node scripts/changelog-release.mjs "${{ steps.version.outputs.next }}"
 
-      - name: Set package.json version
+      - name: Set package version
         run: npm version "${{ steps.version.outputs.next }}" --no-git-tag-version --allow-same-version
 
-      # ── Quality gates + build ───────────────────────
-      - name: Check (typecheck + build + test)
+      - name: Check
         run: npm run check
 
-      # ── Commit, tag, push ───────────────────────────
-      - name: Commit & tag
+      - name: Commit and tag
         run: |
           NEXT="${{ steps.version.outputs.next }}"
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add package.json CHANGELOG.md theme.css tailwind.css base.css
-          git commit -m "chore: release v${NEXT}" || echo "nothing to commit"
-          git tag "v${NEXT}"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: release v$NEXT" || echo "nothing to commit"
+          git tag "v$NEXT"
           git push origin main --tags
 
-      # ── Publish ─────────────────────────────────────
-      - name: Publish to npm (OIDC trusted publishing + provenance)
+      - name: Publish to npm
         run: npx npm@latest publish --provenance --access public
 
       - name: GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.next }}
-          name: v${{ steps.version.outputs.next }}
           generate_release_notes: true
