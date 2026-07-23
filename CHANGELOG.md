@@ -5,14 +5,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
-## [0.2.1] — 2026-07-23
-
 ### Added
 
 - **Dual license.** Source code (compiler + token contract + scripts) is **MIT**; the bundled
   `maxhealth` example brand is **CC BY 4.0** — ship that brand and you must credit Max Health Inc.
   and link https://maxhealth.tech. Adds `LICENSE` + `NOTICE`. (Previously `UNLICENSED`, which is
   wrong for a public package.)
+- Publishing with **provenance** (the repo is now public), via OIDC trusted publishing on npm.
 
 ### Changed
 
@@ -21,9 +20,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ### Fixed
 
-- `release.yml` startup failure — the job `if:` was an unquoted YAML scalar containing a
-  colon-space (`'chore: release v'`), which failed validation ("mapping values are not allowed
-  here"). Quoted it; auto-publish-on-merge works again (OIDC trusted publishing, no token).
+- `release.yml` startup failures: the job `if:` was an unquoted YAML scalar with a colon-space,
+  then the third-party `softprops/action-gh-release` action was blocked by the repo's
+  `allowed_actions: selected` policy. Quoted the `if:`, switched the release step to the built-in
+  `gh` CLI (only allowlisted `actions/*` remain), and dropped the unicode/box-drawing decoration.
+  Auto-publish-on-merge now validates and runs.
+
+<!-- Note: 0.2.1 was tagged but never reached npm (provenance requires a public repo, which was
+     only flipped afterwards); superseded by 0.2.2. -->
 
 ## [0.2.0]
 
