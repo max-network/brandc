@@ -6,7 +6,10 @@ import {
   THEME_CSS,
   TAILWIND_CSS,
   BASE_CSS,
+  DASHBOARD_THEME_CSS,
   maxhealth,
+  dashboard,
+  toCss,
   toPrefabTheme,
 } from "../dist/index.js";
 
@@ -64,6 +67,25 @@ test("generated theme.css + tailwind.css are in sync with the source (run `npm r
   const tw = readFileSync(new URL("../tailwind.css", import.meta.url), "utf8");
   assert.ok(css.endsWith(THEME_CSS), "theme.css is stale");
   assert.ok(tw.endsWith(TAILWIND_CSS), "tailwind.css is stale");
+});
+
+test("the dashboard brand is a second, distinct identity on the same contract", () => {
+  // Same core contract token names as maxhealth (minus the maxhealth-specific accent pair).
+  const coreTokens = Object.keys(maxhealth.colors).filter(
+    (n) => n !== "maxhealth" && n !== "maxhealth-foreground",
+  );
+  for (const name of coreTokens) {
+    assert.ok(dashboard.colors[name], `dashboard missing core colour --${name}`);
+  }
+  // ...but a visibly DIFFERENT brand: rounded (not sharp) and softly shadowed (not flat).
+  assert.equal(dashboard.scalars.radius, "0.5rem");
+  assert.notEqual(dashboard.scalars.radius, maxhealth.scalars.radius);
+  assert.ok(dashboard.scalars.shadow.includes("rgb("));
+  assert.notEqual(dashboard.scalars.shadow, maxhealth.scalars.shadow);
+  // Compiles cleanly to the same delivery format (real light+dark values → light-dark()).
+  assert.ok(DASHBOARD_THEME_CSS.includes(":root {"));
+  assert.ok(DASHBOARD_THEME_CSS.includes("--primary: light-dark("));
+  assert.equal(toCss(dashboard), DASHBOARD_THEME_CSS);
 });
 
 test("base.css is opt-in element ergonomics, not part of the token contract", () => {
