@@ -5,6 +5,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+### Added
+
+- **`main` brand-accent ramp** — a full `50→900` accent scale added to the contract, so apps get a
+  themeable accent palette (`bg-main-*`, `text-main-*`, `border-main-*`, `from/to-main-*`) instead of
+  only single-shade intents. Scheme-independent (the palette is fixed; pick the step per context);
+  `main` aliases the solid `600` step. Shipped in both brands in their own hue — `maxhealth` green
+  (162), `dashboard` blue (262). Rebrand by overriding the `--main-*` `:root` vars.
+
 ## [0.3.0] — 2026-07-24
 
 ### Added
