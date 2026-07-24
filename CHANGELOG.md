@@ -5,6 +5,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+### Added
+
+- **Second shipped brand: `dashboard`** — a rounded, soft-shadowed, blue-primary, dark-sidebar
+  identity (MIT), alongside the flat/sharp/green `maxhealth` brand, proving the contract is genuinely
+  multi-brand. New exports: `dashboard`, `DASHBOARD_THEME_CSS`, `DASHBOARD_TAILWIND_CSS`.
+- **Docs.** README now documents the Tailwind v4 `scalars: {}` gotcha (do not override Tailwind's
+  `rounded-*` / `shadow-*` / font keys when branding a Tailwind app), how to start from a shipped
+  brand, and real consumer examples (gaestehaus, secretspots, hono-ui).
+
 ## [0.2.2] — 2026-07-23
 
 ### Added

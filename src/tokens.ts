@@ -94,6 +94,78 @@ export const maxhealth = {
   },
 } satisfies Brand;
 
+/**
+ * The `dashboard` brand — a second, deliberately DIFFERENT identity that proves the contract is
+ * genuinely multi-brand: rounded + soft-shadowed, a blue primary, slate neutrals, and a dark
+ * sidebar in both schemes (classic app chrome), versus Max Health's flat + sharp + green + light
+ * sidebar. Same contract token NAMES, different VALUES. A good starting point to copy for a new
+ * dashboard/admin app. Authored for this package, so it is MIT (unlike the CC BY `maxhealth` brand).
+ */
+export const dashboard = {
+  name: "dashboard",
+  colors: {
+    // Surfaces (slate-tinted dark)
+    background: { light: "oklch(1 0 0)", dark: "oklch(0.21 0.02 264)" },
+    foreground: { light: "oklch(0.21 0.02 264)", dark: "oklch(0.98 0.003 248)" },
+    card: { light: "oklch(1 0 0)", dark: "oklch(0.26 0.02 264)" },
+    "card-foreground": { light: "oklch(0.21 0.02 264)", dark: "oklch(0.98 0.003 248)" },
+    popover: { light: "oklch(1 0 0)", dark: "oklch(0.26 0.02 264)" },
+    "popover-foreground": { light: "oklch(0.21 0.02 264)", dark: "oklch(0.98 0.003 248)" },
+    // Intents (blue action colour)
+    primary: { light: "oklch(0.55 0.2 262)", dark: "oklch(0.68 0.16 262)" },
+    "primary-foreground": { light: "oklch(0.985 0 0)", dark: "oklch(0.21 0.02 264)" },
+    secondary: { light: "oklch(0.967 0.01 259)", dark: "oklch(0.3 0.02 264)" },
+    "secondary-foreground": { light: "oklch(0.3 0.02 264)", dark: "oklch(0.98 0.003 248)" },
+    muted: { light: "oklch(0.967 0.01 259)", dark: "oklch(0.3 0.02 264)" },
+    "muted-foreground": { light: "oklch(0.55 0.02 257)", dark: "oklch(0.71 0.02 256)" },
+    accent: { light: "oklch(0.967 0.01 259)", dark: "oklch(0.3 0.02 264)" },
+    "accent-foreground": { light: "oklch(0.3 0.02 264)", dark: "oklch(0.98 0.003 248)" },
+    // Status
+    destructive: { light: "oklch(0.58 0.22 27)", dark: "oklch(0.7 0.19 22)" },
+    "destructive-foreground": { light: "oklch(0.985 0 0)", dark: "oklch(0.985 0 0)" },
+    success: { light: "oklch(0.63 0.17 149)", dark: "oklch(0.7 0.17 149)" },
+    "success-foreground": { light: "oklch(0.985 0 0)", dark: "oklch(0.145 0 0)" },
+    warning: { light: "oklch(0.79 0.16 85)", dark: "oklch(0.83 0.16 85)" },
+    "warning-foreground": { light: "oklch(0.28 0.02 264)", dark: "oklch(0.145 0 0)" },
+    info: { light: "oklch(0.62 0.19 250)", dark: "oklch(0.71 0.16 254)" },
+    "info-foreground": { light: "oklch(0.985 0 0)", dark: "oklch(0.145 0 0)" },
+    // Lines + focus
+    border: { light: "oklch(0.92 0.01 256)", dark: "oklch(1 0 0 / 12%)" },
+    input: { light: "oklch(0.92 0.01 256)", dark: "oklch(1 0 0 / 16%)" },
+    ring: { light: "oklch(0.55 0.2 262)", dark: "oklch(0.68 0.16 262)" },
+    // Data viz (blue → teal → green → amber → red)
+    "chart-1": { light: "oklch(0.62 0.19 260)", dark: "oklch(0.62 0.19 260)" },
+    "chart-2": { light: "oklch(0.6 0.13 195)", dark: "oklch(0.6 0.13 195)" },
+    "chart-3": { light: "oklch(0.7 0.15 160)", dark: "oklch(0.7 0.15 160)" },
+    "chart-4": { light: "oklch(0.75 0.16 85)", dark: "oklch(0.75 0.16 85)" },
+    "chart-5": { light: "oklch(0.64 0.2 25)", dark: "oklch(0.64 0.2 25)" },
+    // Sidebar / app chrome — dark in BOTH schemes (the dashboard signature)
+    sidebar: { light: "oklch(0.26 0.02 264)", dark: "oklch(0.18 0.02 264)" },
+    "sidebar-foreground": { light: "oklch(0.98 0.003 248)", dark: "oklch(0.98 0.003 248)" },
+    "sidebar-primary": { light: "oklch(0.68 0.16 262)", dark: "oklch(0.68 0.16 262)" },
+    "sidebar-primary-foreground": { light: "oklch(0.985 0 0)", dark: "oklch(0.985 0 0)" },
+    "sidebar-accent": { light: "oklch(0.32 0.02 264)", dark: "oklch(0.32 0.02 264)" },
+    "sidebar-accent-foreground": { light: "oklch(0.98 0.003 248)", dark: "oklch(0.98 0.003 248)" },
+    "sidebar-border": { light: "oklch(1 0 0 / 12%)", dark: "oklch(1 0 0 / 12%)" },
+    "sidebar-ring": { light: "oklch(0.68 0.16 262)", dark: "oklch(0.68 0.16 262)" },
+  },
+  scalars: {
+    // Shape + elevation — rounded and softly shadowed (the opposite of Max Health's flat/sharp).
+    radius: "0.5rem",
+    "radius-sm": "0.375rem",
+    "radius-md": "0.5rem",
+    "radius-lg": "0.75rem",
+    "shadow-sm": "0 1px 2px 0 rgb(15 23 42 / 0.06)",
+    shadow: "0 1px 3px 0 rgb(15 23 42 / 0.1), 0 1px 2px -1px rgb(15 23 42 / 0.1)",
+    "shadow-md": "0 4px 6px -1px rgb(15 23 42 / 0.1), 0 2px 4px -2px rgb(15 23 42 / 0.1)",
+    "shadow-lg": "0 10px 15px -3px rgb(15 23 42 / 0.1), 0 4px 6px -4px rgb(15 23 42 / 0.1)",
+    // Brand-neutral system stack (no bundled webfont).
+    "font-sans":
+      'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    "font-mono": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+  },
+} satisfies Brand;
+
 /** A token name in the shared contract (without the leading `--`). */
 export type TokenName = keyof typeof maxhealth.colors | keyof typeof maxhealth.scalars;
 

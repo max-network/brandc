@@ -10,9 +10,12 @@ Ships an example brand you can use as-is or override.
 
 - **The contract** — the *names* of the variables (`--primary`, `--card`, `--radius`, `--success`,
   `--font-sans`, …). Stable across kits and stacks. See `CONTRACT` / `TokenName`.
-- **A brand** — the *values*. This package ships one example brand (`maxhealth`): flat + sharp
-  (`--radius: 0`, no shadows), neutral intents + green accent. Rebrand = a new `Brand` with the same
-  names, different values.
+- **A brand** — the *values*. This package ships two brands on that one contract, deliberately
+  different so it is clear the vocabulary is brand-agnostic:
+  - `maxhealth` — flat + sharp (`--radius: 0`, no shadows), neutral intents + green accent (CC BY 4.0).
+  - `dashboard` — rounded + soft-shadowed, blue primary, slate neutrals, dark app sidebar (MIT).
+
+  Rebrand = a new `Brand` with the same names, different values.
 
 ## Authored once, generated many
 
@@ -77,6 +80,36 @@ const ocean: Brand = {
 };
 const css = toCss(ocean); // teal, rounded, soft-shadow — same contract, works on every stack
 ```
+
+Or start from a shipped brand: `import { dashboard, DASHBOARD_THEME_CSS } from "brandc"` for a
+rounded, blue, dark-sidebar dashboard look, then override a few tokens.
+
+## Tailwind v4: brand your own app (the `scalars` gotcha)
+
+When a Tailwind v4 app defines its **own** brand and only wants to rebrand *colours* (keeping
+Tailwind's own `rounded-*` / `shadow-*` / font scale), pass **`scalars: {}`**. The contract's
+`--radius*` / `--shadow*` / `--font-*` names are the same keys Tailwind v4 uses in `@theme`, so
+emitting them would override Tailwind's (e.g. Max Health's `--radius: 0` flattens every `rounded-*`).
+Empty scalars keeps it colours-only:
+
+```ts
+const brand: Brand = { name: "secretspots", colors: { /* … */ }, scalars: {} };
+// inject toCss(brand) + toTailwindCss(brand); bg-primary/text-foreground map to the brand,
+// rounded-lg/shadow-md stay Tailwind's own.
+```
+
+Also add a `.light` class alongside your app's `.dark` toggle so `color-scheme` / `light-dark()`
+resolve (otherwise OS dark can leak into light mode).
+
+## Consumers in the wild
+
+- **gaestehaus-schaub.at** — an SSR shell **and** a precompiled-Tailwind public site from one brand.
+  `src/lib/brand.ts` defines the brand (teal); `toCss(brand)` is injected in each `<head>`, and
+  `app.css` maps Tailwind utilities to it by reference (`--color-brand: var(--brand)`) — no build step,
+  no hardcoded palette.
+- **secretspots.guide** — its own brand on Tailwind v4 with `scalars: {}` (the pattern above).
+- **hono-ui** — the admin theme is compiled from a `Brand` via `toCss`, so the kit's palette can never
+  drift from the contract.
 
 ## Development
 
