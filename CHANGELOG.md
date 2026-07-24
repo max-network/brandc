@@ -5,6 +5,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-07-24
+
 ### Added
 
 - **Second shipped brand: `dashboard`** — a rounded, soft-shadowed, blue-primary, dark-sidebar
