@@ -5,6 +5,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+## [0.3.1] — 2026-07-25
+
 ### Added
 
 - **`main` brand-accent ramp** — a full `50→900` accent scale added to the contract, so apps get a
