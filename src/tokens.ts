@@ -61,6 +61,22 @@ export const maxhealth = {
     // Max Health accent
     maxhealth: { light: "oklch(0.75 0.17 162)", dark: "oklch(0.78 0.17 162)" },
     "maxhealth-foreground": { light: "oklch(0.09 0 0)", dark: "oklch(0.09 0 0)" },
+    // Brand accent ramp (`main`) — a full 50→900 scale so apps have a themeable
+    // accent palette (bg-main-*, text-main-*, from/to-main-*), not just one shade.
+    // Scheme-independent (the palette is fixed; pick the right step per context).
+    // Default here is the Max Health green (hue 162); rebrand by overriding the
+    // `--main-*` :root vars. `main` (bare) aliases the solid 600 step.
+    main: { light: "oklch(0.68 0.16 162)", dark: "oklch(0.68 0.16 162)" },
+    "main-50": { light: "oklch(0.97 0.02 162)", dark: "oklch(0.97 0.02 162)" },
+    "main-100": { light: "oklch(0.945 0.035 162)", dark: "oklch(0.945 0.035 162)" },
+    "main-200": { light: "oklch(0.905 0.06 162)", dark: "oklch(0.905 0.06 162)" },
+    "main-300": { light: "oklch(0.855 0.09 162)", dark: "oklch(0.855 0.09 162)" },
+    "main-400": { light: "oklch(0.8 0.13 162)", dark: "oklch(0.8 0.13 162)" },
+    "main-500": { light: "oklch(0.75 0.16 162)", dark: "oklch(0.75 0.16 162)" },
+    "main-600": { light: "oklch(0.68 0.16 162)", dark: "oklch(0.68 0.16 162)" },
+    "main-700": { light: "oklch(0.585 0.14 162)", dark: "oklch(0.585 0.14 162)" },
+    "main-800": { light: "oklch(0.49 0.115 162)", dark: "oklch(0.49 0.115 162)" },
+    "main-900": { light: "oklch(0.41 0.09 162)", dark: "oklch(0.41 0.09 162)" },
     // Data viz
     "chart-1": { light: "oklch(0.809 0.105 251.813)", dark: "oklch(0.809 0.105 251.813)" },
     "chart-2": { light: "oklch(0.623 0.214 259.815)", dark: "oklch(0.623 0.214 259.815)" },
@@ -120,6 +136,19 @@ export const dashboard = {
     "muted-foreground": { light: "oklch(0.55 0.02 257)", dark: "oklch(0.71 0.02 256)" },
     accent: { light: "oklch(0.967 0.01 259)", dark: "oklch(0.3 0.02 264)" },
     "accent-foreground": { light: "oklch(0.3 0.02 264)", dark: "oklch(0.98 0.003 248)" },
+    // Brand accent ramp (`main`) — same contract as maxhealth, in the dashboard
+    // blue (hue 262). Scheme-independent; `main` aliases the solid 600 step.
+    main: { light: "oklch(0.55 0.2 262)", dark: "oklch(0.55 0.2 262)" },
+    "main-50": { light: "oklch(0.97 0.02 262)", dark: "oklch(0.97 0.02 262)" },
+    "main-100": { light: "oklch(0.93 0.04 262)", dark: "oklch(0.93 0.04 262)" },
+    "main-200": { light: "oklch(0.88 0.07 262)", dark: "oklch(0.88 0.07 262)" },
+    "main-300": { light: "oklch(0.8 0.1 262)", dark: "oklch(0.8 0.1 262)" },
+    "main-400": { light: "oklch(0.7 0.15 262)", dark: "oklch(0.7 0.15 262)" },
+    "main-500": { light: "oklch(0.62 0.19 262)", dark: "oklch(0.62 0.19 262)" },
+    "main-600": { light: "oklch(0.55 0.2 262)", dark: "oklch(0.55 0.2 262)" },
+    "main-700": { light: "oklch(0.48 0.19 262)", dark: "oklch(0.48 0.19 262)" },
+    "main-800": { light: "oklch(0.42 0.16 262)", dark: "oklch(0.42 0.16 262)" },
+    "main-900": { light: "oklch(0.37 0.13 262)", dark: "oklch(0.37 0.13 262)" },
     // Status
     destructive: { light: "oklch(0.58 0.22 27)", dark: "oklch(0.7 0.19 22)" },
     "destructive-foreground": { light: "oklch(0.985 0 0)", dark: "oklch(0.985 0 0)" },

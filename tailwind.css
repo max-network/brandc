@@ -27,6 +27,17 @@
   --color-ring: var(--ring);
   --color-maxhealth: var(--maxhealth);
   --color-maxhealth-foreground: var(--maxhealth-foreground);
+  --color-main: var(--main);
+  --color-main-50: var(--main-50);
+  --color-main-100: var(--main-100);
+  --color-main-200: var(--main-200);
+  --color-main-300: var(--main-300);
+  --color-main-400: var(--main-400);
+  --color-main-500: var(--main-500);
+  --color-main-600: var(--main-600);
+  --color-main-700: var(--main-700);
+  --color-main-800: var(--main-800);
+  --color-main-900: var(--main-900);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
