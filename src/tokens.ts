@@ -77,12 +77,22 @@ export const maxhealth = {
     "main-700": { light: "oklch(0.585 0.14 162)", dark: "oklch(0.585 0.14 162)" },
     "main-800": { light: "oklch(0.49 0.115 162)", dark: "oklch(0.49 0.115 162)" },
     "main-900": { light: "oklch(0.41 0.09 162)", dark: "oklch(0.41 0.09 162)" },
-    // Data viz
-    "chart-1": { light: "oklch(0.809 0.105 251.813)", dark: "oklch(0.809 0.105 251.813)" },
-    "chart-2": { light: "oklch(0.623 0.214 259.815)", dark: "oklch(0.623 0.214 259.815)" },
-    "chart-3": { light: "oklch(0.546 0.245 262.881)", dark: "oklch(0.546 0.245 262.881)" },
-    "chart-4": { light: "oklch(0.488 0.243 264.376)", dark: "oklch(0.488 0.243 264.376)" },
-    "chart-5": { light: "oklch(0.424 0.199 265.638)", dark: "oklch(0.424 0.199 265.638)" },
+    // Data viz — a CATEGORICAL ramp: seven distinct hues for series that have no
+    // order (status, category, cohort). Was a five-step monochrome blue ramp, which
+    // reads as a *sequence* and so mislabels unordered series; a blue-to-blue chart
+    // also can't be told apart without a legend. Scheme-independent: these are
+    // picked for contrast against both the light and dark background.
+    //
+    // The values are the exact oklch of the palette shared-ui shipped hardcoded
+    // (Tailwind's 500 steps), to five decimals so the migration off those hex
+    // literals is byte-identical rather than merely close.
+    "chart-1": { light: "oklch(0.69587 0.14907 162.5)", dark: "oklch(0.69587 0.14907 162.5)" }, // #10b981 emerald
+    "chart-2": { light: "oklch(0.76859 0.16466 70.1)", dark: "oklch(0.76859 0.16466 70.1)" }, // #f59e0b amber
+    "chart-3": { light: "oklch(0.63683 0.20785 25.3)", dark: "oklch(0.63683 0.20785 25.3)" }, // #ef4444 red
+    "chart-4": { light: "oklch(0.60563 0.21892 292.7)", dark: "oklch(0.60563 0.21892 292.7)" }, // #8b5cf6 violet
+    "chart-5": { light: "oklch(0.71484 0.12574 215.2)", dark: "oklch(0.71484 0.12574 215.2)" }, // #06b6d4 cyan
+    "chart-6": { light: "oklch(0.65592 0.21177 354.3)", dark: "oklch(0.65592 0.21177 354.3)" }, // #ec4899 pink
+    "chart-7": { light: "oklch(0.76814 0.2044 130.8)", dark: "oklch(0.76814 0.2044 130.8)" }, // #84cc16 lime
     // Sidebar / app chrome
     sidebar: { light: "oklch(0.985 0 0)", dark: "oklch(0.205 0 0)" },
     "sidebar-foreground": { light: "oklch(0.145 0 0)", dark: "oklch(0.985 0 0)" },
@@ -162,12 +172,15 @@ export const dashboard = {
     border: { light: "oklch(0.92 0.01 256)", dark: "oklch(1 0 0 / 12%)" },
     input: { light: "oklch(0.92 0.01 256)", dark: "oklch(1 0 0 / 16%)" },
     ring: { light: "oklch(0.55 0.2 262)", dark: "oklch(0.68 0.16 262)" },
-    // Data viz (blue → teal → green → amber → red)
+    // Data viz — categorical, same seven slots as maxhealth in this brand's own
+    // hues (blue → teal → green → amber → red → violet → pink).
     "chart-1": { light: "oklch(0.62 0.19 260)", dark: "oklch(0.62 0.19 260)" },
     "chart-2": { light: "oklch(0.6 0.13 195)", dark: "oklch(0.6 0.13 195)" },
     "chart-3": { light: "oklch(0.7 0.15 160)", dark: "oklch(0.7 0.15 160)" },
     "chart-4": { light: "oklch(0.75 0.16 85)", dark: "oklch(0.75 0.16 85)" },
     "chart-5": { light: "oklch(0.64 0.2 25)", dark: "oklch(0.64 0.2 25)" },
+    "chart-6": { light: "oklch(0.61 0.22 293)", dark: "oklch(0.61 0.22 293)" },
+    "chart-7": { light: "oklch(0.66 0.21 354)", dark: "oklch(0.66 0.21 354)" },
     // Sidebar / app chrome — dark in BOTH schemes (the dashboard signature)
     sidebar: { light: "oklch(0.26 0.02 264)", dark: "oklch(0.18 0.02 264)" },
     "sidebar-foreground": { light: "oklch(0.98 0.003 248)", dark: "oklch(0.98 0.003 248)" },
