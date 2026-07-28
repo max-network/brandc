@@ -7,6 +7,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [0.4.0] — 2026-07-28
 
+## [0.4.0] — 2026-07-28
+
 ### Changed
 
 - **The data-viz ramp is now CATEGORICAL, and has seven slots instead of five.**
