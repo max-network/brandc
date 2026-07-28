@@ -5,6 +5,26 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-07-28
+
+### Changed
+
+- **The data-viz ramp is now CATEGORICAL, and has seven slots instead of five.**
+  `maxhealth`'s `--chart-1…5` were a monochrome blue ramp (hues 251–265). A sequential
+  ramp mislabels unordered series — status, category, cohort — and a blue-to-blue chart
+  cannot be read without a legend. The seven slots are now distinct hues
+  (emerald, amber, red, violet, cyan, pink, lime), and `dashboard` gains `--chart-6/7`
+  in its own hues so both brands still cover the same contract.
+
+  The values are the exact oklch of the palette `@max-health-inc/shared-ui` shipped
+  hardcoded (Tailwind's 500 steps), carried to five decimals so consumers migrating off
+  those hex literals are byte-identical rather than merely close.
+
+  **Migration:** anything relying on `--chart-*` being a blue sequence should define its
+  own sequential scale. A DRY.codes sweep found no such consumer — the apps that
+  reference these tokens (consent-app, dtr-app, patient-portal, dicom-viewer, legal-web)
+  only re-map them into Tailwind's namespace and never render with them.
+
 ## [0.3.1] — 2026-07-25
 
 ### Added
