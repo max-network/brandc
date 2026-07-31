@@ -1,13 +1,28 @@
 /**
  * @max-network/css — the shared design-language contract for the Max Network UI kits.
  *
- * One structured source ({@link "./tokens".maxhealth}), three generated delivery formats
+ * Two axes: the CONTRACT declares the token NAMES ({@link "./contract"}), a BRAND supplies the
+ * VALUES ({@link "./tokens"}). From one brand come three generated delivery formats
  * ({@link "./compile"}): a CSS stylesheet ({@link THEME_CSS}), a Tailwind v4 preset
  * ({@link TAILWIND_CSS}), and a prefab wire `theme` ({@link toPrefabTheme}). Author a brand once,
  * render it on any stack.
  */
-export type { Brand, ColorToken, TokenName } from "./tokens.js";
-export { maxhealth, dashboard, CONTRACT } from "./tokens.js";
+export type {
+  Brand,
+  ContractBrand,
+  ColorToken,
+  TokenName,
+  ColorTokenName,
+  ScalarTokenName,
+} from "./contract.js";
+export {
+  CONTRACT,
+  CONTRACT_COLORS,
+  CONTRACT_SCALARS,
+  DEPRECATED_TOKENS,
+  brandExtras,
+} from "./contract.js";
+export { maxhealth, dashboard, BRANDS } from "./tokens.js";
 export { toCss, toTailwindCss, toPrefabTheme } from "./compile.js";
 export { BASE_CSS } from "./base.js";
 

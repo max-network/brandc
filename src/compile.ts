@@ -3,7 +3,7 @@
  * outputs that stay in lockstep — the CSS stylesheet, the Tailwind v4 preset, and the prefab
  * wire `theme` JSON.
  */
-import type { Brand } from "./tokens.js";
+import type { Brand } from "./contract.js";
 
 /**
  * Typed registration of the colour tokens via `@property` — gives them a `<color>` contract
@@ -29,6 +29,17 @@ function propertyRules(brand: Brand): string {
  *   - manual override: `.light` / `[data-theme="light"]` and `.dark` / `[data-theme="dark"]`
  *     flip `color-scheme`, which is what `light-dark()` resolves against (both conventions, to
  *     match prefab's renderer).
+ *
+ * KNOWN LIMIT — the override only works on the element the tokens are declared on (`:root`).
+ * Registering a token via {@link propertyRules} gives it a syntax, and a syntax forces its
+ * `light-dark()` to resolve at COMPUTED-value time, against `:root`'s `color-scheme`. Descendants
+ * then inherit an already-resolved colour, so a `.dark` on `<body>` or on a container is inert
+ * (verified in Chrome 141). An UNregistered token keeps `light-dark()` unresolved until use and
+ * therefore themes a subtree correctly — per w3c/csswg-drafts#13836, where the spec editors
+ * describe this exact hole ("why not giving your custom property a syntax works"), that is the
+ * only workaround today; the issue is open and unresolved, so no spec fix is coming. Which means
+ * the fix here is to stop registering the scheme-DEPENDENT tokens, not to duplicate them into the
+ * toggle blocks. Tracked in issue #14.
  */
 export function toCss(brand: Brand): string {
   const colors = Object.entries(brand.colors)

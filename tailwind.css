@@ -28,6 +28,7 @@
   --color-maxhealth: var(--maxhealth);
   --color-maxhealth-foreground: var(--maxhealth-foreground);
   --color-main: var(--main);
+  --color-main-foreground: var(--main-foreground);
   --color-main-50: var(--main-50);
   --color-main-100: var(--main-100);
   --color-main-200: var(--main-200);

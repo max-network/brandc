@@ -5,7 +5,43 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
-## [0.4.0] — 2026-07-28
+### Changed
+
+- **The contract is now DECLARED, not derived from a brand** ([#13]). `CONTRACT` and `TokenName`
+  were `Object.keys(maxhealth.colors)`, so the "shared" vocabulary was really one brand's private
+  key set — and `dashboard`, a brand this package ships itself, could not satisfy it (61 of 63
+  names). Both now come from an explicit list in the new `src/contract.ts`, which owns the token
+  names and no values.
+
+  New exports: `CONTRACT_COLORS` / `CONTRACT_SCALARS` (the two halves), `ColorTokenName` /
+  `ScalarTokenName`, `DEPRECATED_TOKENS`, `brandExtras(brand)`, and `BRANDS`.
+
+- **`Brand` splits into `Brand` and `ContractBrand`.** `Brand` stays permissive — the documented
+  Tailwind pattern `{ colors: {…}, scalars: {} }` still typechecks, and every generator emits
+  exactly the keys it is given. `ContractBrand` is a brand that covers the WHOLE contract, so a
+  shipped brand missing a token is now a compile error rather than a runtime surprise. Both shipped
+  brands are `satisfies ContractBrand`, and `test/contract.test.mjs` re-checks coverage at runtime.
+
+- **`--main` / `--main-foreground` are a scheme-dependent intent pair.** `--main` was a fixed
+  alias of the solid `600` step; it now behaves like `--primary`, lifting in dark mode
+  (`maxhealth` 0.75 → 0.78). `--main-50…900` stays the scheme-independent palette. `--main-foreground`
+  is new: the contract had no brand-agnostic "legible on the accent" colour. A DRY.codes sweep found
+  no consumer of any `--main*` token, so no consumer is affected.
+
+### Deprecated
+
+- **`--maxhealth` / `--maxhealth-foreground` left the contract**, because a vocabulary every brand
+  must implement cannot carry one brand's name. They remain brand-private extras of the `maxhealth`
+  brand and are still emitted in `theme.css` / `tailwind.css`, so nothing breaks today.
+
+  **Migration:** rename to `--main` / `--main-foreground` (`text-maxhealth` → `text-main`,
+  `bg-maxhealth/10` → `bg-main/10`). The replacements hold byte-identical values in the `maxhealth`
+  brand — asserted by a test — so this is a rename with no visual change. `DEPRECATED_TOKENS`
+  exports the mapping for codemods. Known consumers to migrate: `shared-ui`'s `app-header`,
+  `legal-web`, `connect`, `trust`, and the `--color-maxhealth` re-mappings in consent-app, dtr-app,
+  patient-portal and dicom-viewer.
+
+[#13]: https://github.com/max-network/brandc/issues/13
 
 ## [0.4.0] — 2026-07-28
 

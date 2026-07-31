@@ -137,7 +137,12 @@
 @property --main {
   syntax: "<color>";
   inherits: true;
-  initial-value: oklch(0.68 0.16 162);
+  initial-value: oklch(0.75 0.17 162);
+}
+@property --main-foreground {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: oklch(0.09 0 0);
 }
 @property --main-50 {
   syntax: "<color>";
@@ -294,7 +299,8 @@
   --ring: light-dark(oklch(0.708 0 0), oklch(0.556 0 0));
   --maxhealth: light-dark(oklch(0.75 0.17 162), oklch(0.78 0.17 162));
   --maxhealth-foreground: oklch(0.09 0 0);
-  --main: oklch(0.68 0.16 162);
+  --main: light-dark(oklch(0.75 0.17 162), oklch(0.78 0.17 162));
+  --main-foreground: oklch(0.09 0 0);
   --main-50: oklch(0.97 0.02 162);
   --main-100: oklch(0.945 0.035 162);
   --main-200: oklch(0.905 0.06 162);
