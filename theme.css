@@ -1,143 +1,13 @@
 /* GENERATED from src/tokens.ts by scripts/build-css.mjs — do not edit by hand. */
-@property --background {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(1 0 0);
-}
-@property --foreground {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.145 0 0);
-}
-@property --card {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(1 0 0);
-}
-@property --card-foreground {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.145 0 0);
-}
-@property --popover {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(1 0 0);
-}
-@property --popover-foreground {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.145 0 0);
-}
-@property --primary {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.205 0 0);
-}
-@property --primary-foreground {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.985 0 0);
-}
-@property --secondary {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.97 0 0);
-}
-@property --secondary-foreground {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.205 0 0);
-}
-@property --muted {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.97 0 0);
-}
-@property --muted-foreground {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.556 0 0);
-}
-@property --accent {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.97 0 0);
-}
-@property --accent-foreground {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.205 0 0);
-}
-@property --destructive {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.577 0.245 27.325);
-}
 @property --destructive-foreground {
   syntax: "<color>";
   inherits: true;
   initial-value: oklch(0.985 0 0);
 }
-@property --success {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.627 0.17 149);
-}
-@property --success-foreground {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.985 0 0);
-}
-@property --warning {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.79 0.16 85);
-}
-@property --warning-foreground {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.205 0 0);
-}
-@property --info {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.62 0.19 250);
-}
-@property --info-foreground {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.985 0 0);
-}
-@property --border {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.922 0 0);
-}
-@property --input {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.922 0 0);
-}
-@property --ring {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.708 0 0);
-}
-@property --maxhealth {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.75 0.17 162);
-}
 @property --maxhealth-foreground {
   syntax: "<color>";
   inherits: true;
   initial-value: oklch(0.09 0 0);
-}
-@property --main {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.75 0.17 162);
 }
 @property --main-foreground {
   syntax: "<color>";
@@ -229,45 +99,10 @@
   inherits: true;
   initial-value: oklch(0.76814 0.2044 130.8);
 }
-@property --sidebar {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.985 0 0);
-}
-@property --sidebar-foreground {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.145 0 0);
-}
-@property --sidebar-primary {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.205 0 0);
-}
 @property --sidebar-primary-foreground {
   syntax: "<color>";
   inherits: true;
   initial-value: oklch(0.985 0 0);
-}
-@property --sidebar-accent {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.97 0 0);
-}
-@property --sidebar-accent-foreground {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.205 0 0);
-}
-@property --sidebar-border {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.922 0 0);
-}
-@property --sidebar-ring {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0.708 0 0);
 }
 
 :root {

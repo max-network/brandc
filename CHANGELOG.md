@@ -5,6 +5,34 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+### Fixed
+
+- **Scheme overrides now work at any depth, so a page can render two schemes at once** ([#14]).
+  `.dark` / `[data-theme="dark"]` — and a bare `color-scheme: dark` — used to be inert anywhere
+  but the root element: every token stayed at the value `:root` had already resolved. The failure
+  was silent and half-visible, since native controls and scrollbars in the subtree *did* flip,
+  leaving a light panel holding a dark input.
+
+  The cause was `@property` registration. Giving a custom property a syntax forces its value to
+  resolve at computed-value time, so a `light-dark()` token declared on `:root` decides the scheme
+  there for the whole document ([w3c/csswg-drafts#13836], where the spec editors describe this hole
+  and note that staying unregistered is what keeps the value dynamic; open, no resolution).
+
+  Registration is now applied only where it is free — to tokens whose light and dark values are
+  equal, which carry no `light-dark()` to resolve late. For `maxhealth` that is 21 of 54 colours
+  (the `--main-*` and `--chart-*` palettes plus the non-flipping foregrounds); `dashboard` keeps 25
+  of 52. The split is derived from the values rather than a list of names, so a rebrand that makes
+  a fixed token scheme-dependent drops out of registration on its own.
+
+  **What this costs**, on the scheme-dependent half only: those tokens are no longer typed as
+  `<color>` (an invalid override now breaks the declaration that reads it, instead of being
+  ignored), no longer interpolate in a `transition`, and no longer carry an `initial-value` to fall
+  back to in a browser without `light-dark()` — Baseline since May 2024. Nothing in the org relies
+  on any of the three. Delivery formats, token names and values are otherwise unchanged.
+
+[#14]: https://github.com/max-network/brandc/issues/14
+[w3c/csswg-drafts#13836]: https://github.com/w3c/csswg-drafts/issues/13836
+
 ## [0.5.0] — 2026-07-31
 
 ### Changed

@@ -33,9 +33,12 @@ test("scheme override flips color-scheme on both .dark and [data-theme=dark]", (
   assert.match(THEME_CSS, /\.light,\s*\[data-theme="light"\]\s*\{\s*color-scheme:\s*light;\s*\}/);
 });
 
-test("colour tokens are @property-registered as <color>", () => {
-  assert.match(THEME_CSS, /@property --primary \{\s*syntax: "<color>";/);
-  assert.ok(THEME_CSS.includes("initial-value: oklch(0.205 0 0)")); // primary light
+test("scheme-independent colour tokens are @property-registered as <color>", () => {
+  assert.match(THEME_CSS, /@property --chart-1 \{\s*syntax: "<color>";/);
+  assert.ok(THEME_CSS.includes("initial-value: oklch(0.69587 0.14907 162.5)")); // chart-1
+  // ...and the scheme-dependent ones deliberately are not: a syntax would resolve their
+  // light-dark() once at :root and break `color-scheme` on any descendant (csswg#13836).
+  assert.doesNotMatch(THEME_CSS, /@property --primary \{/);
 });
 
 test("scheme-independent scalars are single values (not light-dark)", () => {

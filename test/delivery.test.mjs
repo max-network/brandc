@@ -46,15 +46,40 @@ test("no shipped brand declares the same token twice", () => {
   }
 });
 
-test("every colour token of every shipped brand is @property-registered as <color>", () => {
-  // The typed registration is what makes a bad override get ignored instead of breaking layout.
-  // A generator that registered only the first group would still pass the :root checks above.
+test("registration follows the values: fixed tokens typed, scheme-dependent ones left dynamic", () => {
+  // A syntax forces the value to resolve at computed-value time, so registering a `light-dark()`
+  // token resolves it once against `:root` and kills `color-scheme` anywhere below (csswg#13836).
+  // Tokens whose two schemes are equal carry no `light-dark()`, so typing them costs nothing.
+  // The split must be DERIVED from the values — a hardcoded list of names would rot on a rebrand.
   for (const brand of BRANDS) {
     const css = toCss(brand);
-    for (const name of Object.keys(brand.colors)) {
+    for (const [name, { light, dark }] of Object.entries(brand.colors)) {
+      const registered = css.includes(`@property --${name} {\n  syntax: "<color>";`);
+      assert.equal(
+        registered,
+        light === dark,
+        light === dark
+          ? `${brand.name}: fixed token --${name} lost its free typed registration`
+          : `${brand.name}: --${name} is scheme-dependent and must NOT be registered`,
+      );
+    }
+  }
+  // Guards the assertion itself: if a brand ever had no tokens of one kind, the loop above would
+  // pass vacuously for that half.
+  const kinds = Object.values(BRANDS[0].colors).map(({ light, dark }) => light === dark);
+  assert.ok(kinds.includes(true) && kinds.includes(false), "brand has only one kind of token");
+});
+
+test("a registered token never carries a light-dark() value", () => {
+  // The invariant behind the split, stated independently of how the split is computed.
+  for (const brand of BRANDS) {
+    const css = toCss(brand);
+    for (const m of css.matchAll(/@property --([a-z0-9-]+) \{/g)) {
+      const decl = new RegExp(`^  --${m[1]}: (.+);$`, "m").exec(css);
+      assert.ok(decl, `${brand.name}: --${m[1]} is registered but never declared`);
       assert.ok(
-        css.includes(`@property --${name} {\n  syntax: "<color>";`),
-        `${brand.name}: --${name} is not @property-registered`,
+        !decl[1].includes("light-dark("),
+        `${brand.name}: --${m[1]} is registered AND carries light-dark() — it will resolve at :root`,
       );
     }
   }

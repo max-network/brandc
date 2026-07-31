@@ -105,7 +105,10 @@ test("deprecated extras still compile, so existing consumers keep working", () =
   // Dropping them from the contract must not drop them from the brand's stylesheet.
   assert.ok(THEME_CSS.includes("--maxhealth:"), "maxhealth brand stopped emitting --maxhealth");
   assert.ok(THEME_CSS.includes("--maxhealth-foreground:"));
-  assert.match(THEME_CSS, /@property --maxhealth \{/);
+  // `--maxhealth` is scheme-dependent, so like every such token it is deliberately not
+  // @property-registered; `--maxhealth-foreground` is fixed in both schemes, so it is.
+  assert.doesNotMatch(THEME_CSS, /@property --maxhealth \{/);
+  assert.match(THEME_CSS, /@property --maxhealth-foreground \{/);
   // ...and are not silently inherited by a brand that never asked for them.
   assert.ok(!DASHBOARD_THEME_CSS.includes("--maxhealth:"));
 });
