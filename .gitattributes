@@ -1,0 +1,9 @@
+# Normalize every text file to LF in the repository AND in the working tree, on
+# every platform. Without this, a Windows checkout produces CRLF while
+# scripts/build-css.mjs writes LF, so the generated stylesheets show as modified
+# after every build and `npm test` fails its "generated CSS is in sync" guards on
+# a fresh clone (CI hid this by running `build` before `test`).
+* text=auto eol=lf
+
+# Generated artifacts — same rule, stated explicitly so it survives edits above.
+*.css text eol=lf
