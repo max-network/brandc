@@ -31,10 +31,15 @@ function propertyRules(brand: Brand): string {
  *     match prefab's renderer).
  *
  * KNOWN LIMIT — the override only works on the element the tokens are declared on (`:root`).
- * `@property`-registered properties resolve at computed-value time, so each `light-dark()` is
- * resolved once against `:root`'s `color-scheme` and descendants inherit the resolved colour; a
- * `.dark` on `<body>` or a container is inert (verified in Chrome 141). Container-scoped theming
- * needs the token declarations repeated inside the toggle blocks — see issue #14.
+ * Registering a token via {@link propertyRules} gives it a syntax, and a syntax forces its
+ * `light-dark()` to resolve at COMPUTED-value time, against `:root`'s `color-scheme`. Descendants
+ * then inherit an already-resolved colour, so a `.dark` on `<body>` or on a container is inert
+ * (verified in Chrome 141). An UNregistered token keeps `light-dark()` unresolved until use and
+ * therefore themes a subtree correctly — per w3c/csswg-drafts#13836, where the spec editors
+ * describe this exact hole ("why not giving your custom property a syntax works"), that is the
+ * only workaround today; the issue is open and unresolved, so no spec fix is coming. Which means
+ * the fix here is to stop registering the scheme-DEPENDENT tokens, not to duplicate them into the
+ * toggle blocks. Tracked in issue #14.
  */
 export function toCss(brand: Brand): string {
   const colors = Object.entries(brand.colors)

@@ -89,10 +89,15 @@ import it. It is never bundled into `theme.css` / `tailwind.css`.
   document.body.classList.toggle("dark", isDark);              // ❌ no effect
   ```
 
-  Because the colour tokens are `@property`-registered (below), each one resolves its
-  `light-dark()` **once, on `:root`**, and descendants inherit the already-resolved colour. Flipping
-  `color-scheme` further down the tree therefore changes nothing. Verified in Chrome 141: a `.dark`
-  on `<body>` leaves every token at the value `:root` had already computed.
+  Because the colour tokens are `@property`-registered (below), they have a *syntax*, and a syntax
+  makes `light-dark()` resolve at computed-value time — **once, on `:root`**. Descendants inherit
+  the already-resolved colour, so flipping `color-scheme` further down the tree changes nothing.
+  Verified in Chrome 141: a `.dark` on `<body>` leaves every token at the value `:root` had already
+  computed. This is a known hole in the platform, not a quirk of this package — see
+  [w3c/csswg-drafts#13836](https://github.com/w3c/csswg-drafts/issues/13836), where the spec
+  editors describe it and note that leaving a custom property unregistered is what keeps
+  `light-dark()` dynamic. Tracked for this package in
+  [#14](https://github.com/max-network/brandc/issues/14).
 - **`@property`** — colour tokens are registered as `<color>` (type-safety + animatable).
 - **oklch** everywhere; derived surfaces via `color-mix()` in the consuming component CSS (no `-bg`
   token sprawl).
