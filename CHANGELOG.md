@@ -25,10 +25,26 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
   a fixed token scheme-dependent drops out of registration on its own.
 
   **What this costs**, on the scheme-dependent half only: those tokens are no longer typed as
-  `<color>` (an invalid override now breaks the declaration that reads it, instead of being
-  ignored), no longer interpolate in a `transition`, and no longer carry an `initial-value` to fall
-  back to in a browser without `light-dark()` — Baseline since May 2024. Nothing in the org relies
-  on any of the three. Delivery formats, token names and values are otherwise unchanged.
+  `<color>`, and no longer interpolate in a `transition`. No consumer transitions a custom property
+  (checked across every app's source), and the typing is a smaller loss than it looks — it made a
+  mistyped override *silently* do nothing, where now it visibly breaks the declaration that reads
+  it. Delivery formats, token names and values are unchanged, and `color-mix()` opacity modifiers
+  (`bg-primary/90`) keep working, now resolving against the subtree's scheme.
+
+- **Scheme-dependent tokens degrade to their light value on browsers without `light-dark()`.**
+  Unregistering them also dropped the `@property` `initial-value`, which had been the fallback for
+  those browsers. Nothing in the *code* depended on it, but it was a passive safety net for end
+  users: without a replacement they would substitute an unparseable value and get each declaration's
+  initial — transparent backgrounds, invisible buttons — rather than the light theme.
+
+  `:root` now carries plain light values and a `@supports (color: light-dark(red, blue))` query
+  upgrades the scheme-dependent ones, the same shape Tailwind v4 uses to back-fill `@property`.
+  Costs 1.3 KB uncompressed (5.9 → 7.2 KB) of near-identical text that gzips away. Verified both
+  paths in Chrome 141: with the query unsatisfiable, the page renders the full light theme.
+
+  The cohort this protects is real — iOS 16.4–16.7 supports `@property`, `oklch()` and
+  `color-mix()` but not `light-dark()`, and devices that cannot update past iOS 16 are still in use
+  on the patient-facing apps.
 
 [#14]: https://github.com/max-network/brandc/issues/14
 [w3c/csswg-drafts#13836]: https://github.com/w3c/csswg-drafts/issues/13836

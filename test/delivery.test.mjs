@@ -115,6 +115,36 @@ test("the prefab wire carries the whole contract for every shipped brand", () =>
   }
 });
 
+test("scheme-dependent tokens degrade to their light value without light-dark() support", () => {
+  // Unregistering these tokens (see above) also dropped the `@property` `initial-value`, which was
+  // the fallback a browser used when it could not parse `light-dark()`. Without a replacement,
+  // such a browser substitutes an unparseable value and the declaration reading it falls back to
+  // its INITIAL value — transparent backgrounds, invisible buttons — rather than to the light
+  // theme. A feature query restores that: plain light values in `:root`, upgraded in `@supports`.
+  // Same shape Tailwind v4 uses to back-fill `@property` on engines that lack it.
+  for (const brand of BRANDS) {
+    const css = toCss(brand);
+    const query = css.indexOf("@supports (color: light-dark(");
+    assert.notEqual(query, -1, `${brand.name}: no light-dark() feature query`);
+    const base = css.slice(0, query);
+    const upgrade = css.slice(query);
+    for (const [name, { light, dark }] of Object.entries(brand.colors)) {
+      if (light === dark) {
+        assert.ok(!upgrade.includes(`--${name}:`), `${brand.name}: fixed --${name} needs no upgrade`);
+        continue;
+      }
+      assert.ok(
+        base.includes(`  --${name}: ${light};`),
+        `${brand.name}: --${name} has no plain light fallback before the feature query`,
+      );
+      assert.ok(
+        upgrade.includes(`  --${name}: light-dark(${light}, ${dark});`),
+        `${brand.name}: --${name} is not upgraded inside the feature query`,
+      );
+    }
+  }
+});
+
 test("a brand's scheme-dependent tokens survive as light-dark(), never collapsed", () => {
   // The collapse in `toCss` (`light === dark` → one value) is an optimisation for fixed palettes.
   // If it ever fired on a token whose two schemes differ, dark mode would silently lose it.

@@ -49,14 +49,16 @@ function propertyRules(brand: Brand): string {
  * container themes its subtree just as well, with no class involved.
  */
 export function toCss(brand: Brand): string {
-  const colors = Object.entries(brand.colors)
-    .map(([name, { light, dark }]) => {
-      const value = light === dark ? light : `light-dark(${light}, ${dark})`;
-      return `  --${name}: ${value};`;
-    })
-    .join("\n");
+  const entries = Object.entries(brand.colors);
+  // `:root` carries the LIGHT value of every colour — plain, parseable by anything. Scheme-
+  // dependent ones are upgraded below; this is what they degrade to otherwise.
+  const colors = entries.map(([name, { light }]) => `  --${name}: ${light};`).join("\n");
   const scalars = Object.entries(brand.scalars)
     .map(([name, value]) => `  --${name}: ${value};`)
+    .join("\n");
+  const dynamic = entries
+    .filter(([, { light, dark }]) => light !== dark)
+    .map(([name, { light, dark }]) => `    --${name}: light-dark(${light}, ${dark});`)
     .join("\n");
 
   const rules = propertyRules(brand);
@@ -65,7 +67,13 @@ export function toCss(brand: Brand): string {
 ${colors}
 ${scalars}
 }
-
+${dynamic === "" ? "" : `
+@supports (color: light-dark(red, blue)) {
+  :root {
+${dynamic}
+  }
+}
+`}
 .light, [data-theme="light"] { color-scheme: light; }
 .dark, [data-theme="dark"] { color-scheme: dark; }
 `;
