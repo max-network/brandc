@@ -5,6 +5,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-07-31
+
 ### Fixed
 
 - **Scheme overrides now work at any depth, so a page can render two schemes at once** ([#14]).
