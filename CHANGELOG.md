@@ -43,8 +43,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
   paths in Chrome 141: with the query unsatisfiable, the page renders the full light theme.
 
   The cohort this protects is real — iOS 16.4–16.7 supports `@property`, `oklch()` and
-  `color-mix()` but not `light-dark()`, and devices that cannot update past iOS 16 are still in use
-  on the patient-facing apps.
+  `color-mix()` but not `light-dark()`, and devices that cannot update past iOS 16 are still in
+  use.
 
 [#14]: https://github.com/max-network/brandc/issues/14
 [w3c/csswg-drafts#13836]: https://github.com/w3c/csswg-drafts/issues/13836
@@ -83,9 +83,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
   **Migration:** rename to `--main` / `--main-foreground` (`text-maxhealth` → `text-main`,
   `bg-maxhealth/10` → `bg-main/10`). The replacements hold byte-identical values in the `maxhealth`
   brand — asserted by a test — so this is a rename with no visual change. `DEPRECATED_TOKENS`
-  exports the mapping for codemods. Known consumers to migrate: `shared-ui`'s `app-header`,
-  `legal-web`, `connect`, `trust`, and the `--color-maxhealth` re-mappings in consent-app, dtr-app,
-  patient-portal and dicom-viewer.
+  exports the mapping for codemods. Consumers to migrate: a shared UI kit that reads the pair in a
+  component, three apps that style with it directly, and several more that only re-map it into
+  Tailwind's namespace via `--color-maxhealth`.
 
 [#13]: https://github.com/max-network/brandc/issues/13
 
@@ -100,14 +100,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
   (emerald, amber, red, violet, cyan, pink, lime), and `dashboard` gains `--chart-6/7`
   in its own hues so both brands still cover the same contract.
 
-  The values are the exact oklch of the palette `@max-health-inc/shared-ui` shipped
-  hardcoded (Tailwind's 500 steps), carried to five decimals so consumers migrating off
-  those hex literals are byte-identical rather than merely close.
+  The values are the exact oklch of the palette a downstream UI kit shipped hardcoded
+  (Tailwind's 500 steps), carried to five decimals so consumers migrating off those hex
+  literals are byte-identical rather than merely close.
 
   **Migration:** anything relying on `--chart-*` being a blue sequence should define its
-  own sequential scale. A DRY.codes sweep found no such consumer — the apps that
-  reference these tokens (consent-app, dtr-app, patient-portal, dicom-viewer, legal-web)
-  only re-map them into Tailwind's namespace and never render with them.
+  own sequential scale. A sweep of the downstream consumers found no such case — the apps
+  that reference these tokens only re-map them into Tailwind's namespace and never render
+  with them.
 
 ## [0.3.1] — 2026-07-25
 

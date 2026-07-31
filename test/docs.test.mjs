@@ -38,8 +38,8 @@ test("the README's two shipped brands are the ones the package exports", () => {
 });
 
 test("every brand-private extra is documented, because kits must know not to read it", () => {
-  // An undocumented extra is how `--maxhealth` became load-bearing in shared-ui in the first
-  // place: it looked like contract vocabulary because nothing said otherwise.
+  // An undocumented extra is how `--maxhealth` became load-bearing in a downstream kit in the
+  // first place: it looked like contract vocabulary because nothing said otherwise.
   for (const brand of [maxhealth, dashboard]) {
     for (const extra of brandExtras(brand)) {
       assert.ok(
