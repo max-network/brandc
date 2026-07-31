@@ -5,6 +5,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-07-31
+
 ### Changed
 
 - **The contract is now DECLARED, not derived from a brand** ([#13]). `CONTRACT` and `TokenName`
