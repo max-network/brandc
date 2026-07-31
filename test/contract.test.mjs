@@ -5,7 +5,7 @@
  * the shared vocabulary was whatever that one brand happened to declare, and the `dashboard` brand
  * this package ships could not satisfy it. These tests pin the contract as something DECLARED,
  * assert every shipped brand covers it, and keep brand-private extras (the deprecated
- * `--maxhealth` pair, still read by shared-ui / legal-web / connect / trust) compiling.
+ * `--maxhealth` pair, still read by downstream consumers) compiling.
  */
 import assert from "node:assert/strict";
 import test from "node:test";
@@ -101,11 +101,14 @@ test("a brand may carry private extras, reported by brandExtras()", () => {
 });
 
 test("deprecated extras still compile, so existing consumers keep working", () => {
-  // shared-ui's app-header (`text-maxhealth`), legal-web, connect and trust read these today.
+  // A shared kit and several apps still read these today (`text-maxhealth`, `bg-maxhealth/10`).
   // Dropping them from the contract must not drop them from the brand's stylesheet.
   assert.ok(THEME_CSS.includes("--maxhealth:"), "maxhealth brand stopped emitting --maxhealth");
   assert.ok(THEME_CSS.includes("--maxhealth-foreground:"));
-  assert.match(THEME_CSS, /@property --maxhealth \{/);
+  // `--maxhealth` is scheme-dependent, so like every such token it is deliberately not
+  // @property-registered; `--maxhealth-foreground` is fixed in both schemes, so it is.
+  assert.doesNotMatch(THEME_CSS, /@property --maxhealth \{/);
+  assert.match(THEME_CSS, /@property --maxhealth-foreground \{/);
   // ...and are not silently inherited by a brand that never asked for them.
   assert.ok(!DASHBOARD_THEME_CSS.includes("--maxhealth:"));
 });

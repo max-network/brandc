@@ -21,10 +21,16 @@ test("every contract token is declared in :root", () => {
   }
 });
 
-test("colours use light-dark() (single declaration, no duplicated dark block)", () => {
+test("colours use light-dark(), with no duplicated dark block", () => {
   assert.ok(THEME_CSS.includes("--background: light-dark(oklch(1 0 0), oklch(0.145 0 0))"));
-  // no second block re-declaring the dark values
-  assert.equal(THEME_CSS.match(/--background:/g)?.length, 1);
+  // A token is declared exactly twice — the plain light fallback in `:root`, then the
+  // light-dark() upgrade inside the feature query. Never a third time.
+  assert.equal(THEME_CSS.match(/--background:/g)?.length, 2);
+  // And the dark scheme is still never a re-declared block of values: the selector carries
+  // `color-scheme` and nothing else, which is what keeps one value per token per scheme.
+  const darkRule = /\.dark,\s*\[data-theme="dark"\]\s*\{([^}]*)\}/.exec(THEME_CSS);
+  assert.ok(darkRule, "no dark selector block");
+  assert.equal(darkRule[1].trim(), "color-scheme: dark;");
 });
 
 test("scheme override flips color-scheme on both .dark and [data-theme=dark]", () => {
@@ -33,9 +39,12 @@ test("scheme override flips color-scheme on both .dark and [data-theme=dark]", (
   assert.match(THEME_CSS, /\.light,\s*\[data-theme="light"\]\s*\{\s*color-scheme:\s*light;\s*\}/);
 });
 
-test("colour tokens are @property-registered as <color>", () => {
-  assert.match(THEME_CSS, /@property --primary \{\s*syntax: "<color>";/);
-  assert.ok(THEME_CSS.includes("initial-value: oklch(0.205 0 0)")); // primary light
+test("scheme-independent colour tokens are @property-registered as <color>", () => {
+  assert.match(THEME_CSS, /@property --chart-1 \{\s*syntax: "<color>";/);
+  assert.ok(THEME_CSS.includes("initial-value: oklch(0.69587 0.14907 162.5)")); // chart-1
+  // ...and the scheme-dependent ones deliberately are not: a syntax would resolve their
+  // light-dark() once at :root and break `color-scheme` on any descendant (csswg#13836).
+  assert.doesNotMatch(THEME_CSS, /@property --primary \{/);
 });
 
 test("scheme-independent scalars are single values (not light-dark)", () => {

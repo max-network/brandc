@@ -6,12 +6,23 @@
 import type { Brand } from "./contract.js";
 
 /**
- * Typed registration of the colour tokens via `@property` — gives them a `<color>` contract
- * (so a bad override is ignored rather than breaking layout) and makes them animatable. The
- * light value is the `initial-value` fallback; `:root` always sets the real `light-dark()` value.
+ * Typed registration of the colour tokens via `@property` — gives them a `<color>` contract (so a
+ * bad override is ignored rather than breaking layout) and makes them animatable.
+ *
+ * Registered ONLY where it is free. Giving a custom property a syntax forces its value to resolve
+ * at computed-value time, i.e. once, on the element that declares it. For a `light-dark()` token
+ * declared on `:root` that means the scheme is decided there for the whole document, and setting
+ * `color-scheme` on any descendant does nothing — see w3c/csswg-drafts#13836, where the spec
+ * editors describe this hole and note that staying unregistered is what keeps the value dynamic.
+ *
+ * A token whose two schemes are equal compiles to a plain value with no `light-dark()` in it, so
+ * nothing is left to resolve late and the typed contract costs it nothing. That is the split, and
+ * it is DERIVED from the values rather than a list of token names: a rebrand that gives a fixed
+ * token distinct light and dark values drops out of registration on its own.
  */
 function propertyRules(brand: Brand): string {
   return Object.entries(brand.colors)
+    .filter(([, { light, dark }]) => light === dark)
     .map(
       ([name, { light }]) =>
         `@property --${name} {\n  syntax: "<color>";\n  inherits: true;\n  initial-value: ${light};\n}`,
@@ -30,36 +41,39 @@ function propertyRules(brand: Brand): string {
  *     flip `color-scheme`, which is what `light-dark()` resolves against (both conventions, to
  *     match prefab's renderer).
  *
- * KNOWN LIMIT — the override only works on the element the tokens are declared on (`:root`).
- * Registering a token via {@link propertyRules} gives it a syntax, and a syntax forces its
- * `light-dark()` to resolve at COMPUTED-value time, against `:root`'s `color-scheme`. Descendants
- * then inherit an already-resolved colour, so a `.dark` on `<body>` or on a container is inert
- * (verified in Chrome 141). An UNregistered token keeps `light-dark()` unresolved until use and
- * therefore themes a subtree correctly — per w3c/csswg-drafts#13836, where the spec editors
- * describe this exact hole ("why not giving your custom property a syntax works"), that is the
- * only workaround today; the issue is open and unresolved, so no spec fix is coming. Which means
- * the fix here is to stop registering the scheme-DEPENDENT tokens, not to duplicate them into the
- * toggle blocks. Tracked in issue #14.
+ * The override works at ANY depth, not just on `:root` — a `.dark` on a panel themes that panel.
+ * That is why {@link propertyRules} leaves the scheme-dependent tokens unregistered (issue #14):
+ * they keep their `light-dark()` unresolved until use, so each one resolves against the
+ * `color-scheme` of the element actually reading it. The two selector conventions below are a
+ * convenience over that mechanism, never a replacement for it — a bare `color-scheme: dark` on a
+ * container themes its subtree just as well, with no class involved.
  */
 export function toCss(brand: Brand): string {
-  const colors = Object.entries(brand.colors)
-    .map(([name, { light, dark }]) => {
-      const value = light === dark ? light : `light-dark(${light}, ${dark})`;
-      return `  --${name}: ${value};`;
-    })
-    .join("\n");
+  const entries = Object.entries(brand.colors);
+  // `:root` carries the LIGHT value of every colour — plain, parseable by anything. Scheme-
+  // dependent ones are upgraded below; this is what they degrade to otherwise.
+  const colors = entries.map(([name, { light }]) => `  --${name}: ${light};`).join("\n");
   const scalars = Object.entries(brand.scalars)
     .map(([name, value]) => `  --${name}: ${value};`)
     .join("\n");
+  const dynamic = entries
+    .filter(([, { light, dark }]) => light !== dark)
+    .map(([name, { light, dark }]) => `    --${name}: light-dark(${light}, ${dark});`)
+    .join("\n");
 
-  return `${propertyRules(brand)}
-
-:root {
+  const rules = propertyRules(brand);
+  return `${rules === "" ? "" : `${rules}\n\n`}:root {
   color-scheme: light dark;
 ${colors}
 ${scalars}
 }
-
+${dynamic === "" ? "" : `
+@supports (color: light-dark(red, blue)) {
+  :root {
+${dynamic}
+  }
+}
+`}
 .light, [data-theme="light"] { color-scheme: light; }
 .dark, [data-theme="dark"] { color-scheme: dark; }
 `;

@@ -46,15 +46,40 @@ test("no shipped brand declares the same token twice", () => {
   }
 });
 
-test("every colour token of every shipped brand is @property-registered as <color>", () => {
-  // The typed registration is what makes a bad override get ignored instead of breaking layout.
-  // A generator that registered only the first group would still pass the :root checks above.
+test("registration follows the values: fixed tokens typed, scheme-dependent ones left dynamic", () => {
+  // A syntax forces the value to resolve at computed-value time, so registering a `light-dark()`
+  // token resolves it once against `:root` and kills `color-scheme` anywhere below (csswg#13836).
+  // Tokens whose two schemes are equal carry no `light-dark()`, so typing them costs nothing.
+  // The split must be DERIVED from the values — a hardcoded list of names would rot on a rebrand.
   for (const brand of BRANDS) {
     const css = toCss(brand);
-    for (const name of Object.keys(brand.colors)) {
+    for (const [name, { light, dark }] of Object.entries(brand.colors)) {
+      const registered = css.includes(`@property --${name} {\n  syntax: "<color>";`);
+      assert.equal(
+        registered,
+        light === dark,
+        light === dark
+          ? `${brand.name}: fixed token --${name} lost its free typed registration`
+          : `${brand.name}: --${name} is scheme-dependent and must NOT be registered`,
+      );
+    }
+  }
+  // Guards the assertion itself: if a brand ever had no tokens of one kind, the loop above would
+  // pass vacuously for that half.
+  const kinds = Object.values(BRANDS[0].colors).map(({ light, dark }) => light === dark);
+  assert.ok(kinds.includes(true) && kinds.includes(false), "brand has only one kind of token");
+});
+
+test("a registered token never carries a light-dark() value", () => {
+  // The invariant behind the split, stated independently of how the split is computed.
+  for (const brand of BRANDS) {
+    const css = toCss(brand);
+    for (const m of css.matchAll(/@property --([a-z0-9-]+) \{/g)) {
+      const decl = new RegExp(`^  --${m[1]}: (.+);$`, "m").exec(css);
+      assert.ok(decl, `${brand.name}: --${m[1]} is registered but never declared`);
       assert.ok(
-        css.includes(`@property --${name} {\n  syntax: "<color>";`),
-        `${brand.name}: --${name} is not @property-registered`,
+        !decl[1].includes("light-dark("),
+        `${brand.name}: --${m[1]} is registered AND carries light-dark() — it will resolve at :root`,
       );
     }
   }
@@ -87,6 +112,36 @@ test("the prefab wire carries the whole contract for every shipped brand", () =>
       [],
       `${brand.name}: scheme-independent scalars must not be duplicated into the dark block`,
     );
+  }
+});
+
+test("scheme-dependent tokens degrade to their light value without light-dark() support", () => {
+  // Unregistering these tokens (see above) also dropped the `@property` `initial-value`, which was
+  // the fallback a browser used when it could not parse `light-dark()`. Without a replacement,
+  // such a browser substitutes an unparseable value and the declaration reading it falls back to
+  // its INITIAL value — transparent backgrounds, invisible buttons — rather than to the light
+  // theme. A feature query restores that: plain light values in `:root`, upgraded in `@supports`.
+  // Same shape Tailwind v4 uses to back-fill `@property` on engines that lack it.
+  for (const brand of BRANDS) {
+    const css = toCss(brand);
+    const query = css.indexOf("@supports (color: light-dark(");
+    assert.notEqual(query, -1, `${brand.name}: no light-dark() feature query`);
+    const base = css.slice(0, query);
+    const upgrade = css.slice(query);
+    for (const [name, { light, dark }] of Object.entries(brand.colors)) {
+      if (light === dark) {
+        assert.ok(!upgrade.includes(`--${name}:`), `${brand.name}: fixed --${name} needs no upgrade`);
+        continue;
+      }
+      assert.ok(
+        base.includes(`  --${name}: ${light};`),
+        `${brand.name}: --${name} has no plain light fallback before the feature query`,
+      );
+      assert.ok(
+        upgrade.includes(`  --${name}: light-dark(${light}, ${dark});`),
+        `${brand.name}: --${name} is not upgraded inside the feature query`,
+      );
+    }
   }
 });
 

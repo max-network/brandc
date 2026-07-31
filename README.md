@@ -82,23 +82,23 @@ import it. It is never bundled into `theme.css` / `tailwind.css`.
   automatically; `.dark` / `[data-theme="dark"]` (and `.light` / `[data-theme="light"]`) flip
   `color-scheme` for a manual override. Both class and `data-theme` conventions are supported.
 
-  **Put the toggle on the root element** (`<html>`), which is where the tokens are declared:
+  The override works at **any depth**, so a page can show two schemes at once — a dark panel in a
+  light page, a preview pane rendering the opposite theme, an inverted hero band:
 
-  ```js
-  document.documentElement.classList.toggle("dark", isDark);   // ✅
-  document.body.classList.toggle("dark", isDark);              // ❌ no effect
+  ```css
+  .panel-dark { color-scheme: dark; }   /* every token inside resolves dark */
   ```
 
-  Because the colour tokens are `@property`-registered (below), they have a *syntax*, and a syntax
-  makes `light-dark()` resolve at computed-value time — **once, on `:root`**. Descendants inherit
-  the already-resolved colour, so flipping `color-scheme` further down the tree changes nothing.
-  Verified in Chrome 141: a `.dark` on `<body>` leaves every token at the value `:root` had already
-  computed. This is a known hole in the platform, not a quirk of this package — see
+  The classes are a convenience over that, not a replacement: a bare `color-scheme` works just as
+  well, which keeps the mechanism generic rather than tied to two naming conventions.
+- **`@property`** — colour tokens are registered as `<color>` (type-safety + animatable) wherever
+  that is free, which is every token whose two schemes are equal: the `--main-*` and `--chart-*`
+  palettes and the foregrounds that don't flip. Scheme-dependent tokens are deliberately left
+  unregistered, because a *syntax* forces `light-dark()` to resolve at computed-value time — once,
+  on `:root` — which would make the subtree theming above impossible. See
   [w3c/csswg-drafts#13836](https://github.com/w3c/csswg-drafts/issues/13836), where the spec
-  editors describe it and note that leaving a custom property unregistered is what keeps
-  `light-dark()` dynamic. Tracked for this package in
-  [#14](https://github.com/max-network/brandc/issues/14).
-- **`@property`** — colour tokens are registered as `<color>` (type-safety + animatable).
+  editors describe exactly this and note that staying unregistered is what keeps the value dynamic.
+  The split is derived from the values, so a rebrand never has to think about it.
 - **oklch** everywhere; derived surfaces via `color-mix()` in the consuming component CSS (no `-bg`
   token sprawl).
 

@@ -5,6 +5,50 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+### Fixed
+
+- **Scheme overrides now work at any depth, so a page can render two schemes at once** ([#14]).
+  `.dark` / `[data-theme="dark"]` — and a bare `color-scheme: dark` — used to be inert anywhere
+  but the root element: every token stayed at the value `:root` had already resolved. The failure
+  was silent and half-visible, since native controls and scrollbars in the subtree *did* flip,
+  leaving a light panel holding a dark input.
+
+  The cause was `@property` registration. Giving a custom property a syntax forces its value to
+  resolve at computed-value time, so a `light-dark()` token declared on `:root` decides the scheme
+  there for the whole document ([w3c/csswg-drafts#13836], where the spec editors describe this hole
+  and note that staying unregistered is what keeps the value dynamic; open, no resolution).
+
+  Registration is now applied only where it is free — to tokens whose light and dark values are
+  equal, which carry no `light-dark()` to resolve late. For `maxhealth` that is 21 of 54 colours
+  (the `--main-*` and `--chart-*` palettes plus the non-flipping foregrounds); `dashboard` keeps 25
+  of 52. The split is derived from the values rather than a list of names, so a rebrand that makes
+  a fixed token scheme-dependent drops out of registration on its own.
+
+  **What this costs**, on the scheme-dependent half only: those tokens are no longer typed as
+  `<color>`, and no longer interpolate in a `transition`. No consumer transitions a custom property
+  (checked across every app's source), and the typing is a smaller loss than it looks — it made a
+  mistyped override *silently* do nothing, where now it visibly breaks the declaration that reads
+  it. Delivery formats, token names and values are unchanged, and `color-mix()` opacity modifiers
+  (`bg-primary/90`) keep working, now resolving against the subtree's scheme.
+
+- **Scheme-dependent tokens degrade to their light value on browsers without `light-dark()`.**
+  Unregistering them also dropped the `@property` `initial-value`, which had been the fallback for
+  those browsers. Nothing in the *code* depended on it, but it was a passive safety net for end
+  users: without a replacement they would substitute an unparseable value and get each declaration's
+  initial — transparent backgrounds, invisible buttons — rather than the light theme.
+
+  `:root` now carries plain light values and a `@supports (color: light-dark(red, blue))` query
+  upgrades the scheme-dependent ones, the same shape Tailwind v4 uses to back-fill `@property`.
+  Costs 1.3 KB uncompressed (5.9 → 7.2 KB) of near-identical text that gzips away. Verified both
+  paths in Chrome 141: with the query unsatisfiable, the page renders the full light theme.
+
+  The cohort this protects is real — iOS 16.4–16.7 supports `@property`, `oklch()` and
+  `color-mix()` but not `light-dark()`, and devices that cannot update past iOS 16 are still in
+  use.
+
+[#14]: https://github.com/max-network/brandc/issues/14
+[w3c/csswg-drafts#13836]: https://github.com/w3c/csswg-drafts/issues/13836
+
 ## [0.5.0] — 2026-07-31
 
 ### Changed
@@ -39,9 +83,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
   **Migration:** rename to `--main` / `--main-foreground` (`text-maxhealth` → `text-main`,
   `bg-maxhealth/10` → `bg-main/10`). The replacements hold byte-identical values in the `maxhealth`
   brand — asserted by a test — so this is a rename with no visual change. `DEPRECATED_TOKENS`
-  exports the mapping for codemods. Known consumers to migrate: `shared-ui`'s `app-header`,
-  `legal-web`, `connect`, `trust`, and the `--color-maxhealth` re-mappings in consent-app, dtr-app,
-  patient-portal and dicom-viewer.
+  exports the mapping for codemods. Consumers to migrate: a shared UI kit that reads the pair in a
+  component, three apps that style with it directly, and several more that only re-map it into
+  Tailwind's namespace via `--color-maxhealth`.
 
 [#13]: https://github.com/max-network/brandc/issues/13
 
@@ -56,14 +100,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
   (emerald, amber, red, violet, cyan, pink, lime), and `dashboard` gains `--chart-6/7`
   in its own hues so both brands still cover the same contract.
 
-  The values are the exact oklch of the palette `@max-health-inc/shared-ui` shipped
-  hardcoded (Tailwind's 500 steps), carried to five decimals so consumers migrating off
-  those hex literals are byte-identical rather than merely close.
+  The values are the exact oklch of the palette a downstream UI kit shipped hardcoded
+  (Tailwind's 500 steps), carried to five decimals so consumers migrating off those hex
+  literals are byte-identical rather than merely close.
 
   **Migration:** anything relying on `--chart-*` being a blue sequence should define its
-  own sequential scale. A DRY.codes sweep found no such consumer — the apps that
-  reference these tokens (consent-app, dtr-app, patient-portal, dicom-viewer, legal-web)
-  only re-map them into Tailwind's namespace and never render with them.
+  own sequential scale. A sweep of the downstream consumers found no such case — the apps
+  that reference these tokens only re-map them into Tailwind's namespace and never render
+  with them.
 
 ## [0.3.1] — 2026-07-25
 

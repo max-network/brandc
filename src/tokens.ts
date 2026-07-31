@@ -13,7 +13,7 @@ import type { ContractBrand } from "./contract.js";
 /**
  * The Max Health brand. `satisfies ContractBrand` checks it covers every contract token while
  * keeping the literal token names for tooling. Colours are oklch and byte-compatible with the
- * shared-ui / prefab base so those kits can consume this unchanged.
+ * downstream UI kits' base, so those kits can consume this unchanged.
  */
 export const maxhealth = {
   name: "maxhealth",
@@ -49,8 +49,8 @@ export const maxhealth = {
     ring: { light: "oklch(0.708 0 0)", dark: "oklch(0.556 0 0)" },
     // DEPRECATED brand-private extras, kept out of the contract because a shared
     // vocabulary may not carry one brand's name — `dashboard` would have to declare
-    // `--maxhealth` too (issue #13). Still emitted, so everything reading them today
-    // (shared-ui's app-header, legal-web, connect, trust) keeps working unchanged.
+    // `--maxhealth` too (issue #13). Still emitted, so the kits and apps reading
+    // them today keep working unchanged.
     // `--main` / `--main-foreground` below hold these exact values, so the migration
     // is a pure rename — see `DEPRECATED_TOKENS`.
     maxhealth: { light: "oklch(0.75 0.17 162)", dark: "oklch(0.78 0.17 162)" },
@@ -81,7 +81,7 @@ export const maxhealth = {
     // also can't be told apart without a legend. Scheme-independent: these are
     // picked for contrast against both the light and dark background.
     //
-    // The values are the exact oklch of the palette shared-ui shipped hardcoded
+    // The values are the exact oklch of the palette a downstream kit shipped hardcoded
     // (Tailwind's 500 steps), to five decimals so the migration off those hex
     // literals is byte-identical rather than merely close.
     "chart-1": { light: "oklch(0.69587 0.14907 162.5)", dark: "oklch(0.69587 0.14907 162.5)" }, // #10b981 emerald
