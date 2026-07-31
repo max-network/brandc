@@ -3,7 +3,7 @@
  * outputs that stay in lockstep — the CSS stylesheet, the Tailwind v4 preset, and the prefab
  * wire `theme` JSON.
  */
-import type { Brand } from "./tokens.js";
+import type { Brand } from "./contract.js";
 
 /**
  * Typed registration of the colour tokens via `@property` — gives them a `<color>` contract
@@ -29,6 +29,12 @@ function propertyRules(brand: Brand): string {
  *   - manual override: `.light` / `[data-theme="light"]` and `.dark` / `[data-theme="dark"]`
  *     flip `color-scheme`, which is what `light-dark()` resolves against (both conventions, to
  *     match prefab's renderer).
+ *
+ * KNOWN LIMIT — the override only works on the element the tokens are declared on (`:root`).
+ * `@property`-registered properties resolve at computed-value time, so each `light-dark()` is
+ * resolved once against `:root`'s `color-scheme` and descendants inherit the resolved colour; a
+ * `.dark` on `<body>` or a container is inert (verified in Chrome 141). Container-scoped theming
+ * needs the token declarations repeated inside the toggle blocks — see issue #14.
  */
 export function toCss(brand: Brand): string {
   const colors = Object.entries(brand.colors)

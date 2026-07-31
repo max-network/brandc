@@ -9,13 +9,43 @@ Ships an example brand you can use as-is or override.
 ## Two axes
 
 - **The contract** — the *names* of the variables (`--primary`, `--card`, `--radius`, `--success`,
-  `--font-sans`, …). Stable across kits and stacks. See `CONTRACT` / `TokenName`.
+  `--font-sans`, …). Stable across kits and stacks. Declared — not derived from any brand — in
+  [`src/contract.ts`](src/contract.ts): 62 names, as `CONTRACT` / `CONTRACT_COLORS` /
+  `CONTRACT_SCALARS` and the `TokenName` union. No token is named after a brand, so any brand can
+  satisfy it.
 - **A brand** — the *values*. This package ships two brands on that one contract, deliberately
   different so it is clear the vocabulary is brand-agnostic:
   - `maxhealth` — flat + sharp (`--radius: 0`, no shadows), neutral intents + green accent (CC BY 4.0).
   - `dashboard` — rounded + soft-shadowed, blue primary, slate neutrals, dark app sidebar (MIT).
 
   Rebrand = a new `Brand` with the same names, different values.
+
+Two types express the axes. **`Brand`** is permissive: pass only the tokens you want to emit (the
+Tailwind `scalars: {}` pattern below relies on this). **`ContractBrand`** is a brand that covers the
+*whole* contract — what a first-class brand must be, and a compile error if a name is missing:
+
+```ts
+export const ocean = { name: "ocean", colors: { /* every contract colour */ }, scalars: { /* … */ } }
+  satisfies ContractBrand;   // ← missing `--ring`? tsc tells you, at authoring time
+```
+
+A brand may also declare **private extras** beyond the contract. They compile into that brand's
+CSS like any other token; `brandExtras(brand)` lists them. A *kit* must never read one — that is
+what the contract is for.
+
+### Deprecated tokens
+
+`--maxhealth` / `--maxhealth-foreground` were once in the contract and are now brand-private
+extras of the `maxhealth` brand: a vocabulary every brand has to implement cannot carry one
+brand's name. They are still emitted, so nothing breaks — but migrate to the brand-agnostic
+accent pair, which holds byte-identical values (a test asserts it), making this a pure rename:
+
+```
+text-maxhealth  →  text-main            bg-maxhealth/10  →  bg-main/10
+--maxhealth-foreground  →  --main-foreground
+```
+
+`DEPRECATED_TOKENS` exports the mapping so a codemod can read it instead of hardcoding it.
 
 ## Authored once, generated many
 
@@ -51,6 +81,18 @@ import it. It is never bundled into `theme.css` / `tailwind.css`.
   duplicated dark block. `:root { color-scheme: light dark }` honours `prefers-color-scheme`
   automatically; `.dark` / `[data-theme="dark"]` (and `.light` / `[data-theme="light"]`) flip
   `color-scheme` for a manual override. Both class and `data-theme` conventions are supported.
+
+  **Put the toggle on the root element** (`<html>`), which is where the tokens are declared:
+
+  ```js
+  document.documentElement.classList.toggle("dark", isDark);   // ✅
+  document.body.classList.toggle("dark", isDark);              // ❌ no effect
+  ```
+
+  Because the colour tokens are `@property`-registered (below), each one resolves its
+  `light-dark()` **once, on `:root`**, and descendants inherit the already-resolved colour. Flipping
+  `color-scheme` further down the tree therefore changes nothing. Verified in Chrome 141: a `.dark`
+  on `<body>` leaves every token at the value `:root` had already computed.
 - **`@property`** — colour tokens are registered as `<color>` (type-safety + animatable).
 - **oklch** everywhere; derived surfaces via `color-mix()` in the consuming component CSS (no `-bg`
   token sprawl).

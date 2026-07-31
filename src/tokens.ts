@@ -1,29 +1,18 @@
 /**
- * The design-language tokens as STRUCTURED DATA — the single source of truth. Every delivery
- * format (the `theme.css` stylesheet, the Tailwind `@theme` preset, the prefab wire `theme`
- * JSON) is GENERATED from this by {@link "./compile"}, so the formats can never drift.
+ * The BRANDS — token VALUES as structured data. The names they fill in are declared, brand-free,
+ * in {@link "./contract"}; every delivery format (the `theme.css` stylesheet, the Tailwind
+ * `@theme` preset, the prefab wire `theme` JSON) is GENERATED from these by {@link "./compile"},
+ * so the formats can never drift.
  *
- * A {@link Brand} is the values; the token NAMES are the shared contract every Max Network UI
- * kit reads. This file ships the Max Health brand (flat + sharp, neutral intents + green accent).
- * Rebrand = a new Brand with the same names, different values.
+ * This file ships two brands on that one contract: `maxhealth` (flat + sharp, neutral intents +
+ * green accent) and `dashboard` (rounded + soft, blue, dark chrome). Rebrand = a new brand with
+ * the same names, different values.
  */
-
-/** A colour token: its light-scheme and dark-scheme values (any CSS `<color>`). */
-export interface ColorToken {
-  light: string;
-  dark: string;
-}
-
-/** A complete brand: scheme-dependent colours + scheme-independent scalars (radius/shadow/font). */
-export interface Brand {
-  name: string;
-  colors: Record<string, ColorToken>;
-  scalars: Record<string, string>;
-}
+import type { ContractBrand } from "./contract.js";
 
 /**
- * The Max Health brand. `satisfies Brand` keeps the literal token names (so {@link TokenName} is
- * a precise union) while checking the shape. Colours are oklch and byte-compatible with the
+ * The Max Health brand. `satisfies ContractBrand` checks it covers every contract token while
+ * keeping the literal token names for tooling. Colours are oklch and byte-compatible with the
  * shared-ui / prefab base so those kits can consume this unchanged.
  */
 export const maxhealth = {
@@ -58,15 +47,24 @@ export const maxhealth = {
     border: { light: "oklch(0.922 0 0)", dark: "oklch(1 0 0 / 10%)" },
     input: { light: "oklch(0.922 0 0)", dark: "oklch(1 0 0 / 15%)" },
     ring: { light: "oklch(0.708 0 0)", dark: "oklch(0.556 0 0)" },
-    // Max Health accent
+    // DEPRECATED brand-private extras, kept out of the contract because a shared
+    // vocabulary may not carry one brand's name — `dashboard` would have to declare
+    // `--maxhealth` too (issue #13). Still emitted, so everything reading them today
+    // (shared-ui's app-header, legal-web, connect, trust) keeps working unchanged.
+    // `--main` / `--main-foreground` below hold these exact values, so the migration
+    // is a pure rename — see `DEPRECATED_TOKENS`.
     maxhealth: { light: "oklch(0.75 0.17 162)", dark: "oklch(0.78 0.17 162)" },
     "maxhealth-foreground": { light: "oklch(0.09 0 0)", dark: "oklch(0.09 0 0)" },
-    // Brand accent ramp (`main`) — a full 50→900 scale so apps have a themeable
-    // accent palette (bg-main-*, text-main-*, from/to-main-*), not just one shade.
-    // Scheme-independent (the palette is fixed; pick the right step per context).
-    // Default here is the Max Health green (hue 162); rebrand by overriding the
-    // `--main-*` :root vars. `main` (bare) aliases the solid 600 step.
-    main: { light: "oklch(0.68 0.16 162)", dark: "oklch(0.68 0.16 162)" },
+    // Brand accent — the contract's brand-AGNOSTIC accent, and the reason the
+    // `maxhealth`-named pair above is redundant. `main` / `main-foreground` are an
+    // intent pair like `primary`: scheme-DEPENDENT, so the accent lifts in dark mode
+    // (0.75 → 0.78) instead of sitting at one lightness for both.
+    main: { light: "oklch(0.75 0.17 162)", dark: "oklch(0.78 0.17 162)" },
+    "main-foreground": { light: "oklch(0.09 0 0)", dark: "oklch(0.09 0 0)" },
+    // ...and `main-50..900` is the fixed PALETTE behind it: a full ramp so apps have
+    // accent shades (bg-main-*, text-main-*, from/to-main-*), not just one. Scheme-
+    // independent on purpose — pick the right step per context. Default here is the
+    // Max Health green (hue 162); rebrand by overriding the `--main-*` :root vars.
     "main-50": { light: "oklch(0.97 0.02 162)", dark: "oklch(0.97 0.02 162)" },
     "main-100": { light: "oklch(0.945 0.035 162)", dark: "oklch(0.945 0.035 162)" },
     "main-200": { light: "oklch(0.905 0.06 162)", dark: "oklch(0.905 0.06 162)" },
@@ -118,7 +116,7 @@ export const maxhealth = {
     "font-sans": '"Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
     "font-mono": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
   },
-} satisfies Brand;
+} satisfies ContractBrand;
 
 /**
  * The `dashboard` brand — a second, deliberately DIFFERENT identity that proves the contract is
@@ -146,9 +144,12 @@ export const dashboard = {
     "muted-foreground": { light: "oklch(0.55 0.02 257)", dark: "oklch(0.71 0.02 256)" },
     accent: { light: "oklch(0.967 0.01 259)", dark: "oklch(0.3 0.02 264)" },
     "accent-foreground": { light: "oklch(0.3 0.02 264)", dark: "oklch(0.98 0.003 248)" },
-    // Brand accent ramp (`main`) — same contract as maxhealth, in the dashboard
-    // blue (hue 262). Scheme-independent; `main` aliases the solid 600 step.
-    main: { light: "oklch(0.55 0.2 262)", dark: "oklch(0.55 0.2 262)" },
+    // Brand accent — same contract pair as maxhealth, in the dashboard blue (hue 262).
+    // Scheme-dependent intent pair: the accent lifts in dark mode and its foreground
+    // flips with it (near-white on the dark-mode blue is too low-contrast).
+    main: { light: "oklch(0.55 0.2 262)", dark: "oklch(0.68 0.16 262)" },
+    "main-foreground": { light: "oklch(0.985 0 0)", dark: "oklch(0.21 0.02 264)" },
+    // The fixed accent palette behind it (scheme-independent, as in every brand).
     "main-50": { light: "oklch(0.97 0.02 262)", dark: "oklch(0.97 0.02 262)" },
     "main-100": { light: "oklch(0.93 0.04 262)", dark: "oklch(0.93 0.04 262)" },
     "main-200": { light: "oklch(0.88 0.07 262)", dark: "oklch(0.88 0.07 262)" },
@@ -206,13 +207,7 @@ export const dashboard = {
       'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     "font-mono": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
   },
-} satisfies Brand;
+} satisfies ContractBrand;
 
-/** A token name in the shared contract (without the leading `--`). */
-export type TokenName = keyof typeof maxhealth.colors | keyof typeof maxhealth.scalars;
-
-/** The full contract as a runtime list — every variable name a kit may read. */
-export const CONTRACT: readonly string[] = [
-  ...Object.keys(maxhealth.colors),
-  ...Object.keys(maxhealth.scalars),
-];
+/** Every brand this package ships as first-class. Each covers the whole contract. */
+export const BRANDS = [maxhealth, dashboard] as const;
