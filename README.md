@@ -10,9 +10,12 @@ Ships an example brand you can use as-is or override.
 
 - **The contract** — the *names* of the variables (`--primary`, `--card`, `--radius`, `--success`,
   `--font-sans`, …). Stable across kits and stacks. Declared — not derived from any brand — in
-  [`src/contract.ts`](src/contract.ts): 62 names, as `CONTRACT` / `CONTRACT_COLORS` /
+  [`src/contract.ts`](src/contract.ts): 78 names, as `CONTRACT` / `CONTRACT_COLORS` /
   `CONTRACT_SCALARS` and the `TokenName` union. No token is named after a brand, so any brand can
-  satisfy it.
+  satisfy it. The scalars cover shape (`--radius*`), elevation (`--shadow*`), typography
+  (`--font-*`) and rhythm: a type scale (`--text-xs` … `--text-2xl`), a spacing ramp
+  (`--space-1` … `--space-8`) and `--measure`. Rhythm values are plain `rem`, so the non-CSS
+  delivery formats can carry them; clamp them in the kit if you want fluid headings.
 - **A brand** — the *values*. This package ships two brands on that one contract, deliberately
   different so it is clear the vocabulary is brand-agnostic:
   - `maxhealth` — flat + sharp (`--radius: 0`, no shadows), neutral intents + green accent (CC BY 4.0).

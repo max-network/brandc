@@ -84,7 +84,7 @@ export const CONTRACT_COLORS = [
   "sidebar-ring",
 ] as const;
 
-/** The scheme-independent half: shape, elevation and typography. One value, both schemes. */
+/** The scheme-independent half: shape, elevation, typography and rhythm. One value, both schemes. */
 export const CONTRACT_SCALARS = [
   "radius",
   "radius-sm",
@@ -96,6 +96,26 @@ export const CONTRACT_SCALARS = [
   "shadow-lg",
   "font-sans",
   "font-mono",
+  // Type scale. Sizes, not roles: a kit picks the step, the brand sets how big it is.
+  "text-xs",
+  "text-sm",
+  "text-base",
+  "text-md",
+  "text-lg",
+  "text-xl",
+  "text-2xl",
+  // Spacing scale — the brand's density. Kits that set ad-hoc pixel gaps per stylesheet stop
+  // sharing a rhythm, which is the drift this half exists to prevent.
+  "space-1",
+  "space-2",
+  "space-3",
+  "space-4",
+  "space-5",
+  "space-6",
+  "space-7",
+  "space-8",
+  // Comfortable line length for long-form prose.
+  "measure",
 ] as const;
 
 /** A scheme-dependent contract token name (without the leading `--`). */
