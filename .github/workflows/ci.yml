@@ -1,8 +1,10 @@
 name: CI
 
+# The quality gate. Runs on both integration branches and on every PR, so a change is checked
+# where it lands (develop) as well as where it ships (main).
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
 
 jobs:
