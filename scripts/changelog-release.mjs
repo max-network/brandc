@@ -2,34 +2,54 @@
 // nothing is documented there. Mirrors the release gate used across the org (see prefab).
 //
 //   node scripts/changelog-release.mjs <version>
+//
+// Sections are found by index rather than one lookahead regex. The previous
+// `/## \[Unreleased\]\s*\n([\s\S]*?)(?=\n## \[|$)/` let `\s*\n` eat the newline the lookahead
+// needed, so an EMPTY [Unreleased] captured the next release's section instead — non-empty, so
+// the guard never fired, and the reinsert hid it. That shipped 0.6.1 with no notes.
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const version = process.argv[2];
-if (!version) {
-  console.error("usage: node scripts/changelog-release.mjs <version>");
-  process.exit(1);
+/** A `## [...]` heading at the start of a line. */
+const HEADING = /^## \[/m;
+
+/**
+ * Promote `[Unreleased]` to `[version]`, dated today. Returns the new document.
+ * Throws when there is no section or nothing documented in it.
+ */
+export function promoteChangelog(md, version, date) {
+  const start = md.match(/^## \[Unreleased\][^\n]*\n/m);
+  if (!start) throw new Error("CHANGELOG.md: no [Unreleased] section found.");
+
+  const bodyAt = start.index + start[0].length;
+  const rest = md.slice(bodyAt);
+  // Body runs to the next heading; the search is on `rest`, so it can never reach past it.
+  const nextAt = rest.search(HEADING);
+  const body = nextAt === -1 ? rest : rest.slice(0, nextAt);
+  const tail = nextAt === -1 ? "" : rest.slice(nextAt);
+
+  if (!body.trim()) {
+    throw new Error("Refusing to release: [Unreleased] is empty — document the changes first.");
+  }
+
+  return `${md.slice(0, start.index)}## [Unreleased]\n\n## [${version}] — ${date}\n\n${body.trim()}\n\n${tail}`;
 }
 
-const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const path = join(root, "CHANGELOG.md");
-const md = readFileSync(path, "utf8");
-
-// Capture the [Unreleased] body up to the next "## [" heading (or end of file).
-const unreleased = /## \[Unreleased\]\s*\n([\s\S]*?)(?=\n## \[|$)/;
-const match = md.match(unreleased);
-if (!match) {
-  console.error("CHANGELOG.md: no [Unreleased] section found.");
-  process.exit(1);
+// Run as a script (not when imported by a test).
+if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1].replace(/\\/g, "/")}`).href) {
+  const version = process.argv[2];
+  if (!version) {
+    console.error("usage: node scripts/changelog-release.mjs <version>");
+    process.exit(1);
+  }
+  const path = join(dirname(fileURLToPath(import.meta.url)), "..", "CHANGELOG.md");
+  const date = new Date().toISOString().slice(0, 10);
+  try {
+    writeFileSync(path, promoteChangelog(readFileSync(path, "utf8"), version, date), "utf8");
+  } catch (err) {
+    console.error(err.message);
+    process.exit(1);
+  }
+  console.log(`CHANGELOG.md: [Unreleased] → [${version}] (${date})`);
 }
-if (!match[1].trim()) {
-  console.error("Refusing to release: [Unreleased] is empty — document the changes first.");
-  process.exit(1);
-}
-
-const date = new Date().toISOString().slice(0, 10);
-const promoted =
-  `## [Unreleased]\n\n## [${version}] — ${date}\n\n${match[1].trim()}\n`;
-writeFileSync(path, md.replace(unreleased, promoted), "utf8");
-console.log(`CHANGELOG.md: [Unreleased] → [${version}] (${date})`);

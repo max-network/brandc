@@ -1,0 +1,20 @@
+name: Check
+
+# The quality gate: `npm run check` (tsc --noEmit, build, node --test). Runs on both integration
+# branches and on every PR, so a change is verified where it lands (develop) and where it ships
+# (main). Named for what it runs, matching the `check` script and worker-utils' checks.yml.
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npm run check
