@@ -11,6 +11,30 @@
 import type { ContractBrand } from "./contract.js";
 
 /**
+ * The default rhythm both shipped brands start from: a 1.25 type scale and a spacing ramp.
+ * Shared rather than repeated, and a brand overrides any step to change its density, exactly
+ * as it overrides `radius` to change its shape.
+ */
+const RHYTHM = {
+  "text-xs": "0.75rem",
+  "text-sm": "0.8125rem",
+  "text-base": "0.9375rem",
+  "text-md": "1.0625rem",
+  "text-lg": "1.25rem",
+  "text-xl": "1.75rem",
+  "text-2xl": "2.5rem",
+  "space-1": "0.25rem",
+  "space-2": "0.5rem",
+  "space-3": "0.75rem",
+  "space-4": "1rem",
+  "space-5": "1.5rem",
+  "space-6": "2rem",
+  "space-7": "3rem",
+  "space-8": "4rem",
+  measure: "68ch",
+} as const;
+
+/**
  * The Max Health brand. `satisfies ContractBrand` checks it covers every contract token while
  * keeping the literal token names for tooling. Colours are oklch and byte-compatible with the
  * downstream UI kits' base, so those kits can consume this unchanged.
@@ -115,6 +139,9 @@ export const maxhealth = {
     // while @fontsource-variable/geist loads (each app imports the font file itself).
     "font-sans": '"Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
     "font-mono": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+    // Rhythm — plain rem so non-CSS consumers (toPrefabTheme, React Native) can read them.
+    // A kit that wants fluid headings clamps these itself.
+    ...RHYTHM,
   },
 } satisfies ContractBrand;
 
@@ -206,6 +233,7 @@ export const dashboard = {
     "font-sans":
       'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     "font-mono": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+    ...RHYTHM,
   },
 } satisfies ContractBrand;
 
