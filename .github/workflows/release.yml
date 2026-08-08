@@ -25,23 +25,39 @@ jobs:
 
       - run: npm install
 
-      - name: Determine next version
+      # RELEASING = BUMPING THE VERSION IN YOUR PR, matching worker-utils / billing / shared-ui /
+      # mcp-http. This used to auto-increment the PATCH whenever package.json was not already
+      # ahead, so an additive contract change shipped as 0.6.1 when it deserved a minor: the
+      # workflow, not the author, decided the semver. Now the version in package.json IS the
+      # release, and a merge whose version is already published is a green no-op.
+      - name: Resolve version
         id: version
         run: |
-          NEXT=$(node -e "const cp=require('child_process');const pkg=require('./package.json').version;let npmv='0.0.0';try{npmv=cp.execSync('npm view brandc version',{stdio:['ignore','pipe','ignore']}).toString().trim()||'0.0.0'}catch(e){}const gt=(x,y)=>{const A=x.split('.').map(Number),B=y.split('.').map(Number);for(let i=0;i<3;i++){if(A[i]>B[i])return true;if(A[i]<B[i])return false}return false};const [a,b,c]=npmv.split('.').map(Number);console.log(gt(pkg,npmv)?pkg:[a,b,c+1].join('.'))")
+          NEXT=$(node -p "require('./package.json').version")
+          PUBLISHED=$(npm view brandc@"$NEXT" version 2>/dev/null || true)
           echo "next=$NEXT" >> "$GITHUB_OUTPUT"
-          echo "brandc release version: $NEXT" >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$PUBLISHED" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "brandc $NEXT is already published — nothing to release." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "brandc release version: $NEXT" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
+      # Every step below is a release action, so all are gated on the version being new.
       - name: Stamp changelog
+        if: steps.version.outputs.skip == 'false'
         run: node scripts/changelog-release.mjs "${{ steps.version.outputs.next }}"
 
       - name: Set package version
+        if: steps.version.outputs.skip == 'false'
         run: npm version "${{ steps.version.outputs.next }}" --no-git-tag-version --allow-same-version
 
       - name: Check
         run: npm run check
 
       - name: Commit and tag
+        if: steps.version.outputs.skip == 'false'
         run: |
           NEXT="${{ steps.version.outputs.next }}"
           git config user.name "github-actions[bot]"
@@ -52,9 +68,11 @@ jobs:
           git push origin main --tags
 
       - name: Publish to npm
+        if: steps.version.outputs.skip == 'false'
         run: npx npm@latest publish --provenance --access public
 
       - name: GitHub Release
+        if: steps.version.outputs.skip == 'false'
         run: gh release create "v${{ steps.version.outputs.next }}" --title "v${{ steps.version.outputs.next }}" --generate-notes
         env:
           GH_TOKEN: ${{ github.token }}
