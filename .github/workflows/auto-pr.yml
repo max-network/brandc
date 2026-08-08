@@ -1,0 +1,71 @@
+name: Auto PR (develop → main)
+
+# Keeps a standing "promote develop → main" PR open after every push to `develop`, so shipping
+# is a one-click merge. Copied from max-network/worker-utils' auto-pr.yml (same flow in
+# Max-Health-Inc/mcp-http and BabelFHIR-TS) rather than reinvented.
+#
+#   feature branch ──PR──> develop ──(this)──> standing PR ──merge──> main ──> publish
+#
+# Before this, `main` WAS the working branch: every PR targeted it and merging published to npm
+# immediately, so there was nowhere to stage. `develop`, not `dev` — the spelling the rest of
+# the org already uses.
+on:
+  push:
+    branches: [develop]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  HEAD_BRANCH: develop
+  BASE_BRANCH: main
+
+jobs:
+  promote:
+    name: Create/Update PR develop → main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if PR exists
+        id: check-pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_EXISTS=$(gh pr list --base "$BASE_BRANCH" --head "$HEAD_BRANCH" --state open --json number --jq length)
+          echo "pr_exists=$PR_EXISTS" >> "$GITHUB_OUTPUT"
+
+      - name: Check diff
+        id: check-diff
+        run: |
+          git fetch origin "$BASE_BRANCH"
+          COMMITS_AHEAD=$(git rev-list --count "origin/${BASE_BRANCH}..origin/${HEAD_BRANCH}")
+          echo "commits_ahead=$COMMITS_AHEAD" >> "$GITHUB_OUTPUT"
+
+      # Nothing to promote is a normal state, not a failure.
+      - name: Create PR
+        if: steps.check-pr.outputs.pr_exists == '0' && steps.check-diff.outputs.commits_ahead != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BODY_TEXT: |
+            Standing promotion PR, kept up to date by `auto-pr.yml`.
+
+            **Merging this publishes `brandc` to the public npm registry.** `release.yml` runs on
+            push to `main` and ships whatever `package.json` says, so bump the version in the PR
+            that adds the change rather than here. A merge whose version is already published
+            publishes nothing and says so in the run summary, which keeps a docs- or CI-only
+            merge green.
+        run: |
+          gh pr create \
+            --base "$BASE_BRANCH" \
+            --head "$HEAD_BRANCH" \
+            --title "🚀 Promote develop → main" \
+            --body "$BODY_TEXT"
+
+      - name: Summary
+        run: |
+          echo "PR exists: ${{ steps.check-pr.outputs.pr_exists }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Commits ahead of ${BASE_BRANCH}: ${{ steps.check-diff.outputs.commits_ahead }}" >> "$GITHUB_STEP_SUMMARY"
