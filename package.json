@@ -44,7 +44,7 @@
     "check": "tsc --noEmit && npm run build && node --test"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
-    "typescript": "^7.0.2"
+    "@types/node": "^22.20.1",
+    "typescript": "^6.0.3"
   }
 }
