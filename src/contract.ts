@@ -86,10 +86,18 @@ export const CONTRACT_COLORS = [
 
 /** The scheme-independent half: shape, elevation, typography and rhythm. One value, both schemes. */
 export const CONTRACT_SCALARS = [
+  // Shape. The full Tailwind radius ladder, not a prefix of it: a step the brand does not
+  // define falls through to Tailwind's own default, so a flat brand that stops at `lg` still
+  // renders `rounded-xl` at 0.75rem. Every consumer then re-zeroes the tail by hand, which is
+  // the drift this contract exists to prevent.
   "radius",
   "radius-sm",
   "radius-md",
   "radius-lg",
+  "radius-xl",
+  "radius-2xl",
+  "radius-3xl",
+  "radius-4xl",
   "shadow-sm",
   "shadow",
   "shadow-md",

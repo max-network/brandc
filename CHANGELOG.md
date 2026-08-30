@@ -5,6 +5,20 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+## [0.7.0] — 2026-08-30
+
+### Added
+
+- **The radius ladder is complete: `radius-xl`, `radius-2xl`, `radius-3xl`, `radius-4xl`.**
+  The contract stopped at `radius-lg`, and a step a brand does not define falls through to
+  Tailwind's own default — so `maxhealth`, which is flat by design, still rendered
+  `rounded-xl` at 0.75rem and `rounded-3xl` at 1.5rem. Every consumer re-zeroed the tail by
+  hand in its own `@theme inline` block (proxy-smart-admin-ui, patient-portal, consent-app),
+  which is exactly the drift a shared contract exists to prevent. `maxhealth` sets all four
+  to `0rem`; `dashboard` continues its ladder at 1 / 1.5 / 2 / 2.5rem.
+
+  Contract size is now 82 tokens (52 colours + 30 scalars).
+
 ### Added
 
 - **The rhythm half of the contract: a type scale and a spacing scale** ([#18]). Documented here
