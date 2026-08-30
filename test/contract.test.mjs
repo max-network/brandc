@@ -28,8 +28,8 @@ test("the contract is a pinned, declared list — changing it is a deliberate ac
   // A published vocabulary must not drift as a side effect of editing a brand. Re-deriving it
   // from `maxhealth` (the old defect) puts that brand's two private tokens back and trips this.
   assert.equal(CONTRACT_COLORS.length, 52, "contract colour count changed — intentional?");
-  assert.equal(CONTRACT_SCALARS.length, 26, "contract scalar count changed — intentional?");
-  assert.equal(CONTRACT.length, 78);
+  assert.equal(CONTRACT_SCALARS.length, 30, "contract scalar count changed — intentional?");
+  assert.equal(CONTRACT.length, 82);
 });
 
 test("no contract token is named after a brand", () => {
