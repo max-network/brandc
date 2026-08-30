@@ -5,6 +5,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+## [0.7.0] — 2026-08-30
+
 ### Added
 
 - **The radius ladder is complete: `radius-xl`, `radius-2xl`, `radius-3xl`, `radius-4xl`.**
