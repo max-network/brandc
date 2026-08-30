@@ -10,7 +10,7 @@ Ships an example brand you can use as-is or override.
 
 - **The contract** — the *names* of the variables (`--primary`, `--card`, `--radius`, `--success`,
   `--font-sans`, …). Stable across kits and stacks. Declared — not derived from any brand — in
-  [`src/contract.ts`](src/contract.ts): 78 names, as `CONTRACT` / `CONTRACT_COLORS` /
+  [`src/contract.ts`](src/contract.ts): 82 names, as `CONTRACT` / `CONTRACT_COLORS` /
   `CONTRACT_SCALARS` and the `TokenName` union. No token is named after a brand, so any brand can
   satisfy it. The scalars cover shape (`--radius*`), elevation (`--shadow*`), typography
   (`--font-*`) and rhythm: a type scale (`--text-xs` … `--text-2xl`), a spacing ramp

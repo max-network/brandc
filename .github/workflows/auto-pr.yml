@@ -4,6 +4,12 @@ name: Auto PR (develop → main)
 # is a one-click merge. Copied from max-network/worker-utils' auto-pr.yml (same flow in
 # Max-Health-Inc/mcp-http and BabelFHIR-TS) rather than reinvented.
 #
+# STAYS A COPY, unlike the other max-network repos, which now call the shared definition in
+# max-network/.github. This repository is PUBLIC and that one is private, and a public repo
+# cannot call a private repo's reusable workflow — the attempt fails at startup with no job and
+# no log. hono-cms-core is in the same position for the same reason. Making the shared repo
+# public would let both join; until that call is made, this copy is deliberate.
+#
 #   feature branch ──PR──> develop ──(this)──> standing PR ──merge──> main ──> publish
 #
 # Before this, `main` WAS the working branch: every PR targeted it and merging published to npm

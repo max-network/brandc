@@ -5,7 +5,62 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+## [0.7.0] — 2026-08-30
+
+### Added
+
+- **The radius ladder is complete: `radius-xl`, `radius-2xl`, `radius-3xl`, `radius-4xl`.**
+  The contract stopped at `radius-lg`, and a step a brand does not define falls through to
+  Tailwind's own default — so `maxhealth`, which is flat by design, still rendered
+  `rounded-xl` at 0.75rem and `rounded-3xl` at 1.5rem. Every consumer re-zeroed the tail by
+  hand in its own `@theme inline` block (proxy-smart-admin-ui, patient-portal, consent-app),
+  which is exactly the drift a shared contract exists to prevent. `maxhealth` sets all four
+  to `0rem`; `dashboard` continues its ladder at 1 / 1.5 / 2 / 2.5rem.
+
+  Contract size is now 82 tokens (52 colours + 30 scalars).
+
+### Added
+
+- **The rhythm half of the contract: a type scale and a spacing scale** ([#18]). Documented here
+  rather than under 0.6.1 because that release went out with no notes; the code itself shipped in
+  0.6.1, as a patch, which is the mislabelling the release-gate and workflow fixes below address.
+
+  The contract carried shape, elevation and typeface but nothing for size or density, so every
+  consumer invented its own and pages stopped sharing a rhythm. Adds 16 scalars — `--text-xs` …
+  `--text-2xl`, `--space-1` … `--space-8`, and `--measure` — taking the contract from 62 to 78 names.
+
+  Values are plain `rem` on purpose: `toPrefabTheme` and the React Native path read scalars as
+  values, so a `clamp()` with viewport units would be unreadable there. A kit that wants fluid
+  headings clamps these itself. Both shipped brands start from one shared `RHYTHM` and override
+  any step to change density, exactly as they override `--radius` to change shape.
+
+  Additive for consumers: only a brand typed `satisfies ContractBrand` must supply the new names.
+
+### Fixed
+
+- **The release gate no longer fails open** ([#19]). `changelog-release.mjs` refused to release an
+  undocumented change in principle only. Its regex let `\s*\n` consume the newline the lookahead
+  needed, so an EMPTY `[Unreleased]` captured the *next* release's section instead — non-empty, so
+  the guard passed, and reinserting it hid the damage. That is how 0.6.1 shipped with no notes at
+  all. Sections are now found by index, and the behaviour is pinned by `test/changelog.test.mjs`.
+
+### Changed
+
+- **`develop` is the integration branch; releasing is bumping the version in your PR** ([#19]).
+  `main` used to be the working branch, so every PR targeted it and merging published on the spot.
+  A push to `develop` now keeps a standing promote PR open (`auto-pr.yml`, the same file
+  `worker-utils` and `mcp-http` use). `release.yml` no longer auto-increments the patch — that is
+  why 0.6.1 went out as a patch when it added 16 contract names. `package.json` is the release, and
+  a merge whose version is already published is a green no-op.
+- `ci.yml` → `check.yml`, named for the script it runs.
+
+[#18]: https://github.com/max-network/brandc/issues/18
+[#19]: https://github.com/max-network/brandc/issues/19
+
 ## [0.6.1] — 2026-08-08
+
+Released by a workflow that stamped the version without notes; see the release-gate fix above.
+The contract additions listed under Unreleased are the content that actually shipped here.
 
 ## [0.6.0] — 2026-07-31
 
