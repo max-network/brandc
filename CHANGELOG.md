@@ -5,6 +5,25 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+### Changed
+
+- **`maxhealth` gets a real radius ladder above `lg`: 0.75 / 1 / 1.5 / 2rem.** 0.7.0 set the
+  new `radius-xl` … `radius-4xl` steps to `0rem` on the reasoning that a flat brand is flat
+  all the way down. It turned out those steps had never rendered flat: they fell through to
+  Tailwind's own defaults, which are the values restored here, so every component built on
+  this brand had been designed against them for as long as the brand has existed.
+
+  Setting them to `0rem` squared 24 corners on maxhealth.tech (product cards, the countdown
+  page) and every chat bubble in AIHR, and both read as broken rather than as flat. The brand
+  is flat at the sizes that trim a CONTROL — button, input, badge, table cell, everything
+  through `lg`, all still `0rem` — and soft at the sizes that shape a SURFACE, where the step
+  is drawing a card or a bubble rather than an edge.
+
+  `dashboard` is unchanged. No consumer needs an edit: the values are what they already
+  rendered before 0.7.0.
+
+## [0.7.0] — 2026-08-30
+
 ### Added
 
 - **The radius ladder is complete: `radius-xl`, `radius-2xl`, `radius-3xl`, `radius-4xl`.**
