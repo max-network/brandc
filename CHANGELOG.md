@@ -5,8 +5,6 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
-## [0.7.0] — 2026-08-30
-
 ### Added
 
 - **The radius ladder is complete: `radius-xl`, `radius-2xl`, `radius-3xl`, `radius-4xl`.**
@@ -18,8 +16,6 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
   to `0rem`; `dashboard` continues its ladder at 1 / 1.5 / 2 / 2.5rem.
 
   Contract size is now 82 tokens (52 colours + 30 scalars).
-
-### Added
 
 - **The rhythm half of the contract: a type scale and a spacing scale** ([#18]). Documented here
   rather than under 0.6.1 because that release went out with no notes; the code itself shipped in
