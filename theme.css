@@ -165,10 +165,10 @@
   --radius-sm: 0rem;
   --radius-md: 0rem;
   --radius-lg: 0rem;
-  --radius-xl: 0rem;
-  --radius-2xl: 0rem;
-  --radius-3xl: 0rem;
-  --radius-4xl: 0rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 2rem;
   --shadow-sm: none;
   --shadow: none;
   --shadow-md: none;

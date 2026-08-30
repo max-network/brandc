@@ -126,15 +126,26 @@ export const maxhealth = {
     "sidebar-ring": { light: "oklch(0.708 0 0)", dark: "oklch(0.556 0 0)" },
   },
   scalars: {
-    // Shape + elevation — Max Health is flat and sharp. Rebrand by overriding these.
+    // Shape + elevation — Max Health is flat and sharp at the sizes that carry a control,
+    // and soft at the sizes that carry a surface. Everything through `lg` is 0rem: buttons,
+    // inputs, badges, table cells. From `xl` up the step is no longer trimming a control, it
+    // is shaping a panel, a card or a chat bubble, and those read as objects on the page
+    // rather than edges of one.
+    //
+    // The tail was 0rem for one release (0.7.0) on the reasoning that a flat brand is flat
+    // all the way. In practice it was not: the values below are what maxhealth.tech and AIHR
+    // had always rendered, because a step the contract did not define fell through to
+    // Tailwind's own defaults. Squaring them squared 24 corners on the marketing site and
+    // every chat bubble in AIHR, and both read as broken rather than as flat. So the ladder
+    // is the design, written down — not the accident it used to be.
     radius: "0rem",
     "radius-sm": "0rem",
     "radius-md": "0rem",
     "radius-lg": "0rem",
-    "radius-xl": "0rem",
-    "radius-2xl": "0rem",
-    "radius-3xl": "0rem",
-    "radius-4xl": "0rem",
+    "radius-xl": "0.75rem",
+    "radius-2xl": "1rem",
+    "radius-3xl": "1.5rem",
+    "radius-4xl": "2rem",
     "shadow-sm": "none",
     shadow: "none",
     "shadow-md": "none",
