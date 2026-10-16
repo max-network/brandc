@@ -13,6 +13,7 @@ import {
   CONTRACT,
   CONTRACT_COLORS,
   CONTRACT_SCALARS,
+  TAILWIND_UNMAPPED_SCALARS,
   toCss,
   toTailwindCss,
   toPrefabTheme,
@@ -91,9 +92,24 @@ test("the Tailwind preset maps every contract token for every shipped brand", ()
     for (const name of CONTRACT_COLORS) {
       assert.ok(tw.includes(`--color-${name}: var(--${name});`), `${brand.name}: --color-${name}`);
     }
-    for (const name of CONTRACT_SCALARS) {
+    for (const name of CONTRACT_SCALARS.filter((n) => !TAILWIND_UNMAPPED_SCALARS.includes(n))) {
       assert.ok(tw.includes(`--${name}: var(--${name});`), `${brand.name}: scalar ${name}`);
     }
+  }
+});
+
+test("the spacing ramp stays out of the Tailwind preset so space-x/y agree with gap, p and m", () => {
+  // Tailwind v4 reads `--space-*` only for `space-x`/`space-y` and `--spacing` for everything else.
+  // Mapping the ordinal ramp made `space-y-5` 1.5rem while `gap-5` stayed 1.25rem.
+  assert.deepEqual(
+    TAILWIND_UNMAPPED_SCALARS,
+    CONTRACT_SCALARS.filter((n) => n.startsWith("space-")),
+  );
+  for (const brand of BRANDS) {
+    const tw = toTailwindCss(brand);
+    assert.doesNotMatch(tw, /--space-/, `${brand.name}: preset maps the spacing ramp`);
+    assert.doesNotMatch(tw, /--spacing/, `${brand.name}: preset touches Tailwind's spacing`);
+    assert.match(toCss(brand), /--space-5: /, `${brand.name}: ramp missing from the stylesheet`);
   }
 });
 

@@ -20,6 +20,7 @@ export {
   CONTRACT_COLORS,
   CONTRACT_SCALARS,
   DEPRECATED_TOKENS,
+  TAILWIND_UNMAPPED_SCALARS,
   brandExtras,
 } from "./contract.js";
 export { maxhealth, dashboard, BRANDS } from "./tokens.js";
