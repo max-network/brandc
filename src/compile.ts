@@ -3,7 +3,7 @@
  * outputs that stay in lockstep — the CSS stylesheet, the Tailwind v4 preset, and the prefab
  * wire `theme` JSON.
  */
-import type { Brand } from "./contract.js";
+import { TAILWIND_UNMAPPED_SCALARS, type Brand } from "./contract.js";
 
 /**
  * Typed registration of the colour tokens via `@property` — gives them a `<color>` contract (so a
@@ -82,7 +82,7 @@ ${dynamic}
 /**
  * The brand as a Tailwind v4 `@theme inline` preset. Two-stage on purpose: the raw values live in
  * `:root`/dark (see {@link toCss}); this layer only MAPS them to Tailwind's namespaces
- * (`--color-*`, `--radius-*`, `--shadow-*`, `--font-*`) by REFERENCE. `inline` + `var()` means the
+ * (`--color-*`, `--radius-*`, `--shadow-*`, `--font-*`, `--text-*`) by REFERENCE. `inline` + `var()` means the
  * values are not baked at build time, so runtime light/dark switching keeps working.
  *
  * Consume after `@import "tailwindcss";` and `@import "@max-network/css/theme.css";`.
@@ -91,7 +91,9 @@ export function toTailwindCss(brand: Brand): string {
   const colors = Object.keys(brand.colors)
     .map((name) => `  --color-${name}: var(--${name});`)
     .join("\n");
+  const unmapped = new Set<string>(TAILWIND_UNMAPPED_SCALARS);
   const scalars = Object.keys(brand.scalars)
+    .filter((name) => !unmapped.has(name))
     .map((name) => `  --${name}: var(--${name});`)
     .join("\n");
   return `@theme inline {\n${colors}\n${scalars}\n}\n`;
