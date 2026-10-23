@@ -5,6 +5,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+## [0.8.1] — 2026-10-23
+
 ### Fixed
 
 - **The spacing ramp no longer leaks into Tailwind's `space-x` / `space-y`.** The preset mapped
