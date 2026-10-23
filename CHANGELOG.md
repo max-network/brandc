@@ -5,6 +5,27 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+### Fixed
+
+- **The spacing ramp no longer leaks into Tailwind's `space-x` / `space-y`.** The preset mapped
+  `--space-1` … `--space-8` into `@theme`, where Tailwind v4 reads `--space-*` for exactly two
+  utilities, `space-x` and `space-y`, and `--spacing` for every other one. The ramp is ordinal and
+  Tailwind's step is linear, so from step 5 up the two disagreed: `space-y-5` was 1.5rem while
+  `gap-5` and `p-5` stayed 1.25rem, and `space-y-8` was 4rem against 2rem. Steps 1-4 only matched
+  by coincidence. Found when myteacher's forgot-password form grew by 16px on the 0.8.0 bump.
+
+  The preset now leaves the ramp out (`TAILWIND_UNMAPPED_SCALARS`, exported); `theme.css` and the
+  prefab wire still carry it, and Tailwind kits read it as `gap-(--space-5)`. Consumers that pinned
+  `--space-*` back in their own `@theme` to undo this can drop the pin.
+
+- **Correction to 0.6.1's "additive for consumers".** That held for TypeScript consumers only.
+  Through `tailwind.css` the type scale overrides Tailwind's own `text-*` sizes, by design (a kit
+  picks the step, the brand sets the size), so every Tailwind app on `maxhealth` or `dashboard`
+  re-rendered its text: `text-sm` 0.875 -> 0.8125rem, `text-base` 1 -> 0.9375rem, `text-lg`
+  1.125 -> 1.25rem, `text-xl` 1.25 -> 1.75rem, `text-2xl` 1.5 -> 2.5rem (`text-xs` unchanged, and
+  `text-md` is new). The README gotcha now lists `--text-*`; an app that wants Tailwind's scale
+  passes `scalars: {}` or pins the steps in its own `@theme`.
+
 ## [0.8.0] — 2026-08-30
 
 ### Changed

@@ -129,6 +129,12 @@ export const CONTRACT_SCALARS = [
 /** A scheme-dependent contract token name (without the leading `--`). */
 export type ColorTokenName = (typeof CONTRACT_COLORS)[number];
 
+/** Scalars kept out of the Tailwind preset: Tailwind's `--space-*` drives only `space-x/y` as a
+ *  linear step shared with `gap`/`p`/`m`, so the ordinal ramp is read as `gap-(--space-5)`. */
+export const TAILWIND_UNMAPPED_SCALARS: readonly ScalarTokenName[] = CONTRACT_SCALARS.filter((name) =>
+  name.startsWith("space-"),
+);
+
 /** A scheme-independent contract token name (without the leading `--`). */
 export type ScalarTokenName = (typeof CONTRACT_SCALARS)[number];
 

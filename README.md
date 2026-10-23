@@ -15,7 +15,9 @@ Ships an example brand you can use as-is or override.
   satisfy it. The scalars cover shape (`--radius*`), elevation (`--shadow*`), typography
   (`--font-*`) and rhythm: a type scale (`--text-xs` … `--text-2xl`), a spacing ramp
   (`--space-1` … `--space-8`) and `--measure`. Rhythm values are plain `rem`, so the non-CSS
-  delivery formats can carry them; clamp them in the kit if you want fluid headings.
+  delivery formats can carry them; clamp them in the kit if you want fluid headings. In Tailwind
+  the type scale drives `text-*`; the spacing ramp is not mapped (see the gotcha below) and is
+  read with the variable syntax, e.g. `gap-(--space-5)`.
 - **A brand** — the *values*. This package ships two brands on that one contract, deliberately
   different so it is clear the vocabulary is brand-agnostic:
   - `maxhealth` — flat + sharp (`--radius: 0`, no shadows), neutral intents + green accent (CC BY 4.0).
@@ -137,16 +139,23 @@ rounded, blue, dark-sidebar dashboard look, then override a few tokens.
 ## Tailwind v4: brand your own app (the `scalars` gotcha)
 
 When a Tailwind v4 app defines its **own** brand and only wants to rebrand *colours* (keeping
-Tailwind's own `rounded-*` / `shadow-*` / font scale), pass **`scalars: {}`**. The contract's
-`--radius*` / `--shadow*` / `--font-*` names are the same keys Tailwind v4 uses in `@theme`, so
-emitting them would override Tailwind's (e.g. Max Health's `--radius: 0` flattens every `rounded-*`).
-Empty scalars keeps it colours-only:
+Tailwind's own `rounded-*` / `shadow-*` / font and type scale), pass **`scalars: {}`**. The
+contract's `--radius*` / `--shadow*` / `--font-*` / `--text-*` names are the same keys Tailwind v4
+uses in `@theme`, so emitting them would override Tailwind's (e.g. Max Health's `--radius: 0`
+flattens every `rounded-*`, and its type scale sets `text-xl` to 1.75rem where Tailwind's is
+1.25rem). Empty scalars keeps it colours-only:
 
 ```ts
 const brand: Brand = { name: "secretspots", colors: { /* … */ }, scalars: {} };
 // inject toCss(brand) + toTailwindCss(brand); bg-primary/text-foreground map to the brand,
 // rounded-lg/shadow-md stay Tailwind's own.
 ```
+
+The spacing ramp is the one scalar group the preset leaves out (`TAILWIND_UNMAPPED_SCALARS`).
+Tailwind reads `--space-*` only for `space-x` / `space-y`, as a linear step that `gap`, `p` and
+`m` share through `--spacing`; an ordinal ramp under that key made `space-y-5` (1.5rem) disagree
+with `gap-5` (1.25rem). Use `p-(--space-5)` / `gap-(--space-5)` to put the brand rhythm on a
+Tailwind element.
 
 Also add a `.light` class alongside your app's `.dark` toggle so `color-scheme` / `light-dark()`
 resolve (otherwise OS dark can leak into light mode).
