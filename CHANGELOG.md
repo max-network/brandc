@@ -26,6 +26,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
   `text-md` is new). The README gotcha now lists `--text-*`; an app that wants Tailwind's scale
   passes `scalars: {}` or pins the steps in its own `@theme`.
 
+## [0.8.0] — 2026-08-30
+
 ### Changed
 
 - **`maxhealth` gets a real radius ladder above `lg`: 0.75 / 1 / 1.5 / 2rem.** 0.7.0 set the
