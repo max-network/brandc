@@ -5,6 +5,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+### Added
+
+- **`TYPE_SCALE` and `SPACE_SCALE` are exported.** The default type scale and spacing ramp (plus
+  `measure`) both shipped brands use were a private constant, so a product brand that wanted the
+  same rhythm copied the nine spacing values by hand (dry.codes and guido-manager both did). Spread
+  them into `scalars` instead; values are unchanged.
+
 ## [0.8.1] — 2026-10-23
 
 ### Fixed

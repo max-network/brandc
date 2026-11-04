@@ -23,7 +23,7 @@ export {
   TAILWIND_UNMAPPED_SCALARS,
   brandExtras,
 } from "./contract.js";
-export { maxhealth, dashboard, BRANDS } from "./tokens.js";
+export { maxhealth, dashboard, BRANDS, TYPE_SCALE, SPACE_SCALE } from "./tokens.js";
 export { toCss, toTailwindCss, toPrefabTheme } from "./compile.js";
 export { BASE_CSS } from "./base.js";
 

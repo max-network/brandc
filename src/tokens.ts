@@ -8,14 +8,10 @@
  * green accent) and `dashboard` (rounded + soft, blue, dark chrome). Rebrand = a new brand with
  * the same names, different values.
  */
-import type { ContractBrand } from "./contract.js";
+import type { ContractBrand, ScalarTokenName } from "./contract.js";
 
-/**
- * The default rhythm both shipped brands start from: a 1.25 type scale and a spacing ramp.
- * Shared rather than repeated, and a brand overrides any step to change its density, exactly
- * as it overrides `radius` to change its shape.
- */
-const RHYTHM = {
+/** The default 1.25 type scale both shipped brands use; a brand overrides any step to change its density. */
+export const TYPE_SCALE = {
   "text-xs": "0.75rem",
   "text-sm": "0.8125rem",
   "text-base": "0.9375rem",
@@ -23,6 +19,10 @@ const RHYTHM = {
   "text-lg": "1.25rem",
   "text-xl": "1.75rem",
   "text-2xl": "2.5rem",
+} as const satisfies Partial<Record<ScalarTokenName, string>>;
+
+/** The default spacing ramp and measure; spread it into a brand that keeps the shared rhythm. */
+export const SPACE_SCALE = {
   "space-1": "0.25rem",
   "space-2": "0.5rem",
   "space-3": "0.75rem",
@@ -32,7 +32,9 @@ const RHYTHM = {
   "space-7": "3rem",
   "space-8": "4rem",
   measure: "68ch",
-} as const;
+} as const satisfies Partial<Record<ScalarTokenName, string>>;
+
+const RHYTHM = { ...TYPE_SCALE, ...SPACE_SCALE };
 
 /**
  * The Max Health brand. `satisfies ContractBrand` checks it covers every contract token while
