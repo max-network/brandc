@@ -12,6 +12,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
   same rhythm copied the nine spacing values by hand (dry.codes and guido-manager both did). Spread
   them into `scalars` instead; values are unchanged.
 
+## [0.8.1] — 2026-10-23
+
 ### Fixed
 
 - **The spacing ramp no longer leaks into Tailwind's `space-x` / `space-y`.** The preset mapped
