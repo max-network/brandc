@@ -136,6 +136,10 @@ const css = toCss(ocean); // teal, rounded, soft-shadow — same contract, works
 Or start from a shipped brand: `import { dashboard, DASHBOARD_THEME_CSS } from "brandc"` for a
 rounded, blue, dark-sidebar dashboard look, then override a few tokens.
 
+A brand written from scratch can still take the shared rhythm instead of retyping it:
+`scalars: { ...TYPE_SCALE, ...SPACE_SCALE, radius: "8px", /* … */ }`, or only `SPACE_SCALE` when it
+sets its own type sizes.
+
 ## Tailwind v4: brand your own app (the `scalars` gotcha)
 
 When a Tailwind v4 app defines its **own** brand and only wants to rebrand *colours* (keeping

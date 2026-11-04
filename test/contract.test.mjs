@@ -112,3 +112,12 @@ test("deprecated extras still compile, so existing consumers keep working", () =
   // ...and are not silently inherited by a brand that never asked for them.
   assert.ok(!DASHBOARD_THEME_CSS.includes("--maxhealth:"));
 });
+
+test("the exported default scales cover every type, spacing and measure step of the contract", async () => {
+  const { TYPE_SCALE, SPACE_SCALE } = await import("../dist/index.js");
+  const rhythm = CONTRACT_SCALARS.filter((name) => /^(text-|space-)/.test(name) || name === "measure");
+  assert.deepEqual(Object.keys({ ...TYPE_SCALE, ...SPACE_SCALE }).sort(), [...rhythm].sort());
+  for (const brand of [maxhealth, dashboard]) {
+    for (const [name, value] of Object.entries(SPACE_SCALE)) assert.equal(brand.scalars[name], value);
+  }
+});
