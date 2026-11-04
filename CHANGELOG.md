@@ -5,6 +5,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ## [Unreleased]
 
+## [0.9.0] — 2026-11-04
+
 ### Added
 
 - **`TYPE_SCALE` and `SPACE_SCALE` are exported.** The default type scale and spacing ramp (plus
