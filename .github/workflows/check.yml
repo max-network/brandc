@@ -5,6 +5,11 @@ on:
     branches: [main, develop]
   pull_request:
 
+permissions:
+  actions: read
+  contents: read
+  packages: read
+
 jobs:
   check:
     uses: max-network/.github/.github/workflows/check.yml@main
