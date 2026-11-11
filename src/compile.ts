@@ -85,7 +85,7 @@ ${dynamic}
  * (`--color-*`, `--radius-*`, `--shadow-*`, `--font-*`, `--text-*`) by REFERENCE. `inline` + `var()` means the
  * values are not baked at build time, so runtime light/dark switching keeps working.
  *
- * Consume after `@import "tailwindcss";` and `@import "@max-network/css/theme.css";`.
+ * Consume after `@import "tailwindcss";` and `@import "brandc/theme.css";`.
  */
 export function toTailwindCss(brand: Brand): string {
   const colors = Object.keys(brand.colors)
