@@ -1,5 +1,5 @@
 /**
- * @max-network/css — the shared design-language contract for the Max Network UI kits.
+ * brandc — the shared design-language contract for the Max Network UI kits.
  *
  * Two axes: the CONTRACT declares the token NAMES ({@link "./contract"}), a BRAND supplies the
  * VALUES ({@link "./tokens"}). From one brand come three generated delivery formats
