@@ -9,11 +9,5 @@ jobs:
     uses: max-network/.github/.github/workflows/auto-pr.yml@main
     with:
       head-branch: develop
-      body: |
-        Standing promotion PR, kept up to date by `auto-pr.yml`.
-
-        **Merging this publishes `brandc` to the public npm registry.** `release.yml` runs on
-        push to `main` and ships whatever `package.json` says, so bump the version in the PR
-        that adds the change rather than here. A merge whose version is already published
-        publishes nothing and says so in the run summary.
+      note: "Merging publishes the version in package.json to the public npm registry through release.yml, so bump it in the PR that adds the change. A version already published releases nothing."
     secrets: inherit
